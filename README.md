@@ -9,3 +9,5 @@ This repo is maintained by:
 - Pablo Castellanos Lopez
 
 
+![cheatsheet1](./docs/ros2_cheatsheet_1.png)
+![cheatsheet2](./docs/ros2_cheatsheet_2.png)
