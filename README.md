@@ -4,6 +4,7 @@ Repo for planification and cognitive system course at URJC
 
 This repo is maintained by:
 
+- Alejandro Sanchez Alvarez
 - Pablo Castellanos Lopez
 
 
