@@ -1,5 +1,5 @@
 # ROS2_Planification_and_Cognitive_Systems
-Repo for planification and cognitive system course at URJC
+Repository for planification and cognitive systems course at URJC
 
 
 This repo is maintained by:
