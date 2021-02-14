@@ -2,6 +2,7 @@
 #include "std_msgs/msg/string.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
 #include "time.h"
+#include "math.h"
 
 using namespace std::chrono_literals;
 
@@ -12,8 +13,8 @@ rclcpp::Node::SharedPtr node_sub = nullptr;
 
 //function to generate random values from 1.0 to 4.0
 //revise values!!! there are some values less than 1.0
-double doubleRand() {
-  return rand_max * double(rand()) / (double(RAND_MAX) + 1.0);
+float floatRand() {
+  return rand_max * float(rand()) / (float(RAND_MAX) + 1.0);
 }
 
 void sub_callback(const sensor_msgs::msg::LaserScan::SharedPtr laser)
@@ -47,12 +48,23 @@ int main(int argc, char * argv[])
 
     laser_message.angle_min = 0;   //min angle of laser
     laser_message.angle_max = 360; //max angle of laser
+   
+
+    for (double i = 0; i < laser_message.angle_max; i=i+1.0)
+    {
+      if (fmod(i, 3.6)==0)
+      {
+        laser_message.intensities[i] = floatRand();
+      }
+    }
+    
+
 
     //define here 100 random lectures of the laser
     //float laser_intensities[MAX_LECTURES];
     //laser_message.intensities = laser_intensities
 
-    RCLCPP_INFO(node_pub->get_logger(), "rand number [%f]", doubleRand());
+    RCLCPP_INFO(node_pub->get_logger(), "rand number [%f]", floatRand());
 
 
     // RCLCPP_INFO(node->get_logger(), "Publishing [%s]", message.data.c_str());
