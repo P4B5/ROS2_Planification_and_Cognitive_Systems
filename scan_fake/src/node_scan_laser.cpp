@@ -6,10 +6,15 @@
 #include "vector"
 #include <random>
 
+#include <iostream>
+#include <string>
+#include <random>
+
 using namespace std::chrono_literals;
 
 
 rclcpp::Node::SharedPtr node_sub = nullptr;
+
 
 void sub_callback(const sensor_msgs::msg::LaserScan::SharedPtr laser)
 {
@@ -28,20 +33,23 @@ int main(int argc, char * argv[])
 
   node_sub = rclcpp::Node::make_shared("node_scan_sub");
   auto subscription = node_sub->create_subscription<sensor_msgs::msg::LaserScan>(
-    "laser_data", rclcpp::QoS(100).best_effort(), sub_callback); 
-    
+    "laser_data", rclcpp::QoS(100).best_effort(), sub_callback);
+
   /*
     band width = 1 lecture per second
     QoS Best effort --> laser data is admisable to lost casual info
   */
- 
+
   rclcpp::Rate loop_rate(1000ms); //1000ms = 1s = 1Hz
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node_pub);
   executor.add_node(node_sub);
-  
+
+
   while (rclcpp::ok()) {
+    std::default_random_engine generator;
+    std::normal_distribution<double> distribution(4.0,1.0);
 
     std::vector<float> values;
 
@@ -55,7 +63,7 @@ int main(int argc, char * argv[])
     {
       values.push_back(distribution(generator)); 
     }
-    
+
     //message data
 
     laser_message.angle_min = -M_PI; //min angle of laser in rad
@@ -63,6 +71,7 @@ int main(int argc, char * argv[])
     laser_message.angle_increment = M_PI/50;
     laser_message.scan_time = 1.0;
     laser_message.ranges = values;
+
 
     publisher->publish(laser_message);
     RCLCPP_INFO(node_pub->get_logger(), "Publishing laser data...");
