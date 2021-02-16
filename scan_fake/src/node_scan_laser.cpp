@@ -4,27 +4,43 @@
 #include "time.h"
 #include "cmath"
 #include "vector"
+#include <random>
 
 using namespace std::chrono_literals;
 
+/*
+ros2 topic hz /laser_data --> It shows it goes 1 Hz
+ros2 topic bw /laser_data --> It shows the band width, 460 b/s
+QoS Best effort --> laser data is admisable to lost casual info
+*/
 
-const int MAX_RANGE = 360;
-
-
-const int rand_max = 4.0;
 const int MAX_LECTURES = 100; //max number of lectures in our laser
 
 rclcpp::Node::SharedPtr node_sub = nullptr;
 
-//function to generate random values from 1.0 to 4.0
-//revise values!!! there are some values less than 1.0
-float floatRand() {
-  return rand_max * float(rand()) / (float(RAND_MAX) + 1.0);
-}
-
 void sub_callback(const sensor_msgs::msg::LaserScan::SharedPtr laser)
 {
-  RCLCPP_INFO(node_sub->get_logger(), "I heard: [%f]", laser->angle_max);
+  float max = 0.0;
+  float min = 10.0;
+  float accum = 0.0;
+  
+  for(int i=0; i<MAX_LECTURES; i++)
+  {
+    if(laser->ranges[i]>=max){
+      max = laser->ranges[i];
+    }
+
+    if(laser->ranges[i]<=min){
+      min = laser->ranges[i];
+    }
+
+    accum += laser->ranges[i];
+  }
+  float average = accum / MAX_LECTURES;
+
+  RCLCPP_INFO(node_sub->get_logger(), "Max: [%f]", max);
+  RCLCPP_INFO(node_sub->get_logger(), "Min: [%f]", min);
+  RCLCPP_INFO(node_sub->get_logger(), "Average: [%f]", average);
 }
 
 
@@ -41,10 +57,6 @@ int main(int argc, char * argv[])
   auto subscription = node_sub->create_subscription<sensor_msgs::msg::LaserScan>(
     "laser_data", rclcpp::QoS(100).best_effort(), sub_callback); 
     
-  /*
-    band width = 1 lecture per second
-    QoS Best effort --> laser data is admisable to lost casual info
-  */
  
 
   rclcpp::Rate loop_rate(1000ms); //1000ms = 1s = 1Hz
@@ -56,22 +68,26 @@ int main(int argc, char * argv[])
 
   while (rclcpp::ok()) {
 
-    std::vector<float> ranges;
+    std::vector<float> values;
+
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator (seed);
+    std::normal_distribution<float> distribution (4,1.0);
+
 
     //add 100 random lectures to the ranges array --> implement 3.6 each position
     for (int i = 0; i < 100; i++)
     {
-      ranges.push_back(floatRand()); 
+      values.push_back(distribution(generator)); 
     }
     
     //message data
-    laser_message.angle_min = 0;      //min angle of laser in rad
-    laser_message.angle_max = 2*M_PI; //max angle of laser in rad
+
+    laser_message.angle_min = -M_PI; //min angle of laser in rad
+    laser_message.angle_max = M_PI; //max angle of laser in rad
+    laser_message.angle_increment = M_PI/50;
     laser_message.scan_time = 1.0;
-    laser_message.ranges = ranges;
-
-
-    RCLCPP_INFO(node_pub->get_logger(), "rand number [%f]", floatRand());
+    laser_message.ranges = values;
 
     publisher->publish(laser_message);
     RCLCPP_INFO(node_pub->get_logger(), "Publishing laser data...");
