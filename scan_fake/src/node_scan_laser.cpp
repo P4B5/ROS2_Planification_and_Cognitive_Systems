@@ -8,13 +8,39 @@
 
 using namespace std::chrono_literals;
 
+/*
+ros2 topic hz /laser_data --> It shows it goes 1 Hz
+ros2 topic bw /laser_data --> It shows the band width, 460 b/s
+QoS Best effort --> laser data is admisable to lost casual info
+*/
+
+const int MAX_LECTURES = 100; //max number of lectures in our laser
 
 rclcpp::Node::SharedPtr node_sub = nullptr;
 
-
 void sub_callback(const sensor_msgs::msg::LaserScan::SharedPtr laser)
 {
-  RCLCPP_INFO(node_sub->get_logger(), "I heard: [%f]", laser->ranges[0]);
+  float max = 0.0;
+  float min = 10.0;
+  float accum = 0.0;
+  
+  for(int i=0; i<MAX_LECTURES; i++)
+  {
+    if(laser->ranges[i]>=max){
+      max = laser->ranges[i];
+    }
+
+    if(laser->ranges[i]<=min){
+      min = laser->ranges[i];
+    }
+
+    accum += laser->ranges[i];
+  }
+  float average = accum / MAX_LECTURES;
+
+  RCLCPP_INFO(node_sub->get_logger(), "Max: [%f]", max);
+  RCLCPP_INFO(node_sub->get_logger(), "Min: [%f]", min);
+  RCLCPP_INFO(node_sub->get_logger(), "Average: [%f]", average);
 }
 
 
@@ -29,23 +55,16 @@ int main(int argc, char * argv[])
 
   node_sub = rclcpp::Node::make_shared("node_scan_sub");
   auto subscription = node_sub->create_subscription<sensor_msgs::msg::LaserScan>(
-    "laser_data", rclcpp::QoS(100).best_effort(), sub_callback);
-
-  /*
-    band width = 1 lecture per second
-    QoS Best effort --> laser data is admisable to lost casual info
-  */
-
+    "laser_data", rclcpp::QoS(100).best_effort(), sub_callback); 
+    
+ 
   rclcpp::Rate loop_rate(1000ms); //1000ms = 1s = 1Hz
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node_pub);
   executor.add_node(node_sub);
-
-
+  
   while (rclcpp::ok()) {
-    std::default_random_engine generator;
-    std::normal_distribution<double> distribution(4.0,1.0);
 
     std::vector<float> values;
 
@@ -59,7 +78,7 @@ int main(int argc, char * argv[])
     {
       values.push_back(distribution(generator)); 
     }
-
+    
     //message data
 
     laser_message.angle_min = -M_PI; //min angle of laser in rad
@@ -67,7 +86,6 @@ int main(int argc, char * argv[])
     laser_message.angle_increment = M_PI/50;
     laser_message.scan_time = 1.0;
     laser_message.ranges = values;
-
 
     publisher->publish(laser_message);
     RCLCPP_INFO(node_pub->get_logger(), "Publishing laser data...");
