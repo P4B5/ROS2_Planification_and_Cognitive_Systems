@@ -42,7 +42,6 @@ void sub_callback(const sensor_msgs::msg::LaserScan::SharedPtr laser)
     if (laser->ranges[i] >= max) {
       max = laser->ranges[i];
     }
-
     if (laser->ranges[i] <= min) {
       min = laser->ranges[i];
     }
