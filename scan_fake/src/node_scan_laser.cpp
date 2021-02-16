@@ -63,6 +63,7 @@ int main(int argc, char * argv[])
   auto node_pub = rclcpp::Node::make_shared("node_scan_pub");
   auto publisher = node_pub->create_publisher<sensor_msgs::msg::LaserScan>(
     "laser_data", rclcpp::QoS(1).best_effort());
+
   sensor_msgs::msg::LaserScan laser_message;
 
   node_sub = rclcpp::Node::make_shared("node_scan_sub");
@@ -73,6 +74,8 @@ int main(int argc, char * argv[])
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node_pub);
   executor.add_node(node_sub);
+
+  
 
   while (rclcpp::ok()) {
     std::vector<float> values;
@@ -87,7 +90,11 @@ int main(int argc, char * argv[])
       values.push_back(distribution(generator));
     }
 
-    // message data
+    // rclcpp::Clock::SharedPtr scan_time = rclcpp::Node::get_clock();
+
+    // // message data
+    // laser_message.header.stamp = scan_time;
+    laser_message.header.frame_id = "scan_fake_frame";
     laser_message.angle_min = -M_PI;  // min angle of laser in rad
     laser_message.angle_max = M_PI;  // max angle of laser in rad
     laser_message.angle_increment = M_PI / 50;
