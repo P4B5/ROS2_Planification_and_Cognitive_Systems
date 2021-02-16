@@ -1,4 +1,4 @@
-// Copyright 2021
+// Copyright 2021 Intelligent Robotics Lab
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ int main(int argc, char * argv[])
     // message data
     laser_message.angle_min = -M_PI;  // min angle of laser in rad
     laser_message.angle_max = M_PI;  // max angle of laser in rad
-    laser_message.angle_increment = M_PI / 50;
+    laser_message.angle_increment = M_PI / 50; // Increment the angle each 3.6º
     laser_message.scan_time = 1.0;
     laser_message.ranges = values;
 
