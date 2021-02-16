@@ -76,8 +76,6 @@ int main(int argc, char * argv[])
   executor.add_node(node_sub);
 
 
-  
-
   while (rclcpp::ok()) {
     std::vector<float> values;
 
@@ -94,7 +92,7 @@ int main(int argc, char * argv[])
     laser_message.header.frame_id = "scan_fake_frame";
     laser_message.angle_min = -M_PI;  // min angle of laser in rad
     laser_message.angle_max = M_PI;  // max angle of laser in rad
-    laser_message.angle_increment = M_PI / 50; // Increment the angle each 3.6º
+    laser_message.angle_increment = M_PI / 50;  // Increment the angle each 3.6º
     laser_message.scan_time = 1.0;
     laser_message.range_min = 0.0;
     laser_message.range_max = 100.0;
