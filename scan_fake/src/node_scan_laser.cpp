@@ -46,12 +46,14 @@ int main(int argc, char * argv[])
     QoS Best effort --> laser data is admisable to lost casual info
   */
  
+
   rclcpp::Rate loop_rate(1000ms); //1000ms = 1s = 1Hz
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node_pub);
   executor.add_node(node_sub);
   
+
   while (rclcpp::ok()) {
 
     std::vector<float> ranges;
