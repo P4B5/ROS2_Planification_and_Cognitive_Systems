@@ -15,6 +15,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
+#include "std_msgs/msg/header.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
 // #include "time.h"
 #include "cmath"
@@ -62,7 +63,7 @@ int main(int argc, char * argv[])
 
   auto node_pub = rclcpp::Node::make_shared("node_scan_pub");
   auto publisher = node_pub->create_publisher<sensor_msgs::msg::LaserScan>(
-    "laser_data", rclcpp::QoS(1).best_effort());
+    "laser_data", rclcpp::QoS(1).reliable());
 
   sensor_msgs::msg::LaserScan laser_message;
 
@@ -75,10 +76,15 @@ int main(int argc, char * argv[])
   executor.add_node(node_pub);
   executor.add_node(node_sub);
 
+
   
 
   while (rclcpp::ok()) {
+    
+    // std::vector<float> values;
+
     std::vector<float> values;
+    // std::vector<float> intensities;
 
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
@@ -88,7 +94,9 @@ int main(int argc, char * argv[])
     // add 100 random lectures to the ranges array --> implement 3.6 each position
     for (int i = 0; i < 100; i++) {
       values.push_back(distribution(generator));
+      intensities.push_back(distribution(generator));
     }
+
 
     // rclcpp::Clock::SharedPtr scan_time = rclcpp::Node::get_clock();
 
@@ -100,6 +108,8 @@ int main(int argc, char * argv[])
     laser_message.angle_increment = M_PI / 50; // Increment the angle each 3.6º
     laser_message.scan_time = 1.0;
     laser_message.ranges = values;
+    // laser_message.intensities = intensities;
+
 
     publisher->publish(laser_message);
     RCLCPP_INFO(node_pub->get_logger(), "Publishing laser data...");
