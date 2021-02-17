@@ -1,0 +1,31 @@
+name: main
+
+on: 
+  pull requests:
+    branches:
+      - main
+    push:
+      branches:
+        - main
+
+
+jobs:
+  build-and-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+      fail-fast: false
+    steps:
+      - name: Setup ROS 2
+        uses: ros-tooling/setup-ros@0.1.1
+        with:
+          required-ros-distribution: foxy
+      - name: build and test
+        uses: ros-tooling/action-ros-ci@0.1.0
+        with:
+          package-name: test-ci
+          target-ros2-distro: foxy
+          vcs-repo-file-url: ""
+          colcon-mixin-name: coverage-gcc
+          colcon-mixin-repository: https://raw.gihubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
