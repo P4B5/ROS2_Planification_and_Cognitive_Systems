@@ -8,6 +8,9 @@ on:
     branches:
       - main
       
+
+    
+    
 jobs:
   build-and-test:
     runs-on: ${{ matrix.os }}
@@ -16,6 +19,12 @@ jobs:
         os: [ubuntu-20.04]
       fail-fast: false
     steps:
+      - name: Checkout private tools
+        uses: actions/checkout@v2
+        with:
+          repository: my-org/my-private-tools
+          token: ${{ secrets.GitHub_PAT }} # `GitHub_PAT` is a secret that contains your PAT
+          path: my-tools
       - name: Setup ROS 2
         uses: ros-tooling/setup-ros@0.1.1
         with:
