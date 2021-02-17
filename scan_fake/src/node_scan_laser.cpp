@@ -77,10 +77,6 @@ int main(int argc, char * argv[])
 
 
   while (rclcpp::ok()) {
-<<<<<<< HEAD
-    
-=======
->>>>>>> f6f6244bd93c301077e5cf69b65f5a3172b100be
     std::vector<float> values;
 
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -91,10 +87,6 @@ int main(int argc, char * argv[])
     // add 100 random lectures to the ranges array --> implement 3.6 each position
     for (int i = 0; i < MAX_LECTURES; i++) {
       values.push_back(distribution(generator));
-<<<<<<< HEAD
-      // intensities.push_back(distribution(generator));
-=======
->>>>>>> f6f6244bd93c301077e5cf69b65f5a3172b100be
     }
 
     laser_message.header.frame_id = "scan_fake_frame";
@@ -105,10 +97,6 @@ int main(int argc, char * argv[])
     laser_message.range_min = 0.0;
     laser_message.range_max = 100.0;
     laser_message.ranges = values;
-<<<<<<< HEAD
-=======
-
->>>>>>> f6f6244bd93c301077e5cf69b65f5a3172b100be
 
     publisher->publish(laser_message);
     RCLCPP_INFO(node_pub->get_logger(), "Publishing laser data...");
