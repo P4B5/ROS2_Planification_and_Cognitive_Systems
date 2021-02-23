@@ -19,16 +19,17 @@ jobs:
         os: [ubuntu-20.04]
       fail-fast: false
     steps:
-      - name: Checkout private tools
-        uses: actions/checkout@v2
-        with:
-          repository: my-org/my-private-tools
-          token: ${{ secrets.GitHub_PAT }} # `GitHub_PAT` is a secret that contains your PAT
-          path: my-tools
-      - name: Setup ROS 2
-        uses: ros-tooling/setup-ros@0.1.1
-        with:
+    - name: Setup ROS 2
+      uses: ros-tooling/setup-ros@0.1.1
+      with:
           required-ros-distributions: foxy
+    
+#       - name: Checkout private tools
+#         uses: actions/checkout@v2
+#         with:
+#           repository: my-org/my-private-tools
+#           token: ${{ secrets.GitHub_PAT }} # `GitHub_PAT` is a secret that contains your PAT
+#           path: my-tools
 #       - name: build and test
 #         uses: ros-tooling/action-ros-ci@0.1.0
 #         with:
