@@ -31,11 +31,12 @@ jobs:
 #           token: ${{ secrets.GitHub_PAT }} # `GitHub_PAT` is a secret that contains your PAT
 #           path: my-tools
     - name: build and test
-      uses: https://github.com/P4B5/action-ros-ci/setup-ros@v0.1
+    - uses: ros-tooling/setup-ros@v0.1
+    - uses: ros-tooling/action-ros-ci@v0.1
       with:
         package-name: test_ci
         target-ros2-distro: foxy
-        vcs-repo-file-url: ""
+        vcs-repo-file-url: "https://github.com/P4B5/action-ros-ci"
         colcon-mixin-name: coverage-gcc
         colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
 #       - name: Codecov
