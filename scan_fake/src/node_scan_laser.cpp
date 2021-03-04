@@ -98,7 +98,6 @@ int main(int argc, char * argv[])
     laser_message.range_max = 100.0;
     laser_message.ranges = values;
 
-
     publisher->publish(laser_message);
     RCLCPP_INFO(node_pub->get_logger(), "Publishing laser data...");
     executor.spin_once();
