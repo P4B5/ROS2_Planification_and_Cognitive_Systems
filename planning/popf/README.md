@@ -1,67 +1,51 @@
-# popf planer
+
+POPF PLANNER
+
+This planner works with PDDL 1.2 to PDDL 3.1
+
+Here is the official repo : https://github.com/fmrico/popf.git
 
 
-// Ejecutado en ros2, 
-// Repo oficial: https://github.com/fmrico/popf.git
-//launch popf: ros2 run popf popf [domain.pddl] [problem.pddl]
-
-
-//Apuntes para averiguar que soporta y que no soporta POPF con PDDL
-
-COSAS SOPORTADAS:
-
-	Durative actions, 
-	Funciones // devuelve algo para que se utilice despues ej: distancia
-	Operaciones (división, multiplicacion) Operaciones logicas (and or..)
-	Not (en los efectos)
-	soporta if (= from to)
-	for ALL
-	Usa tipado
-	Constantes
-	Soporta increase // y decrease 
-	Metricas de minimize (para que se recorra la minima distancia por ejemplo) (no he entendido bien como va me lo tengo que remirar)
+Its launched in ROS2. This planner has to be launched as:
+	ros2 run popf popf [domain.pddl] [problem.pddl]
 	
 
-	:strips       Permite	añadir	o	borrar	efectos
-	:typing       Permite	usar	tipos
-	:equality     Permite	comparar	si	dos	objetivos	son	el	mismo
-	:universal-preconditions    Permite	usar	forall	es	goals	y	precondiciones
-	
-	:durative-actions
-	:duration-inequalities Permiten	 usar	 desigualdades	 para	 expresar	duración
-	:continuous-effects Permite el uso de efectos	continuos sobre números dentro de	acciones	durativas.
-	timed-initial-literals A timed initial literal is defined using the time keyword, followed by the value for the point in time which the predicate becomes true, followed by the predicate itself.
-	:numeric-fluents Permite usar funciones que representan valores numericos// En popf2 si esta soportado
-	
-	
-	
-COSAS NO SOPORTADAS:
 
-	Not en las conditions
-	For all en los goal en los goals
-	No soporta funciones sin parametros
+Suported actions/things:
+
+	:strips - Allows add or delete effects
+	:typing - Allows use types
+	:equality - Allows compare if 2 objetives are the same
+	:universal-preconditions - Allows use for all in goals and preconditions
+	:durative-actions - 
+	:duration-inecualities - Allows use inecualities to express duration 
+	:continuous-effects - Allows use continious effects about numbers inside durative actions 
+	:timed-initial-literals - A timed initial literal is defined using the time keyword, followed by the value for the point in time which the predicate becomes true, followed by the predicate itself.
+	:numeric-fluents - Allows use functions which write numeric values // In popf1 is not supported in popf2 yes
 	
-	No soporta ADL (action description language)  es una  planificación y programación automatizadas
 	
-	disjunctive-preconditions (or en las precondiciones
-	existential-preconditions (exist en goals y precondiciones)
-	conditional-effects (misma accion con diferentes tipos)
-	domain-axioms (permite utilizar axiomas (:derived (clear ?x
-	:subgoals-through-axioms  Permite	usar	axiomas como	subgoals
-	safety-constraints Permite definir predicados que deben ser validos al final de la ejecucion de un plan
-	open-world (de normal si no hay algo definido se dice que no existe, esto lo evida
 	
-	:quantified-preconditions Equivalente a :requirements, existential predonditions y universal preconditions
-	:adl
-	:ucpop
 	
-	:numeric-fluents Permite usar funciones que representan valores numericos// En popf2 si esta soportado
-	negative-preconditions Not en las conditions
+Not supported actions/things:
+
+	:disjunctive-preconditions - Allows all in preconditions
+	:existential-preconditions - Allows exist in goals and preconditions
+	:conditional-effects - Allows same action with different types
+	:domain-axioms - Allows use axioms (:Derived (clear ?x
+	:subgoals-through-axioms - Axioms as subgoals
+	:safety-constraints - Allows define predicates which must be valid at the end of the execution
+	:open-world - 
+	:quantified-preconditions - 
+	:adl - 
+	:ucpop - 
+	:derived-predicates - 
 	
-	:derived-predicates
 	:constraints A derived predicate is declared by naming the predicate who’s result is being derived, and a logical expression which is evaluated to work out the value.
-	:preferences
+	:preferences - 
 	
-	:action-costs
-	:goal-utilities
-	:time
+	:action-costs - 
+	:goal-utilities - 
+	:time - 
+	
+	
+	
