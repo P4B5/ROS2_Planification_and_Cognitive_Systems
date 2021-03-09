@@ -1,5 +1,4 @@
 #!/bin/bash
-
-python2.7 ~/tfd_planning/tfd-src-0.4/downward/translate/translate.py $1 $2
-~/tfd_planning/tfd-src-0.4/downward/preprocess/preprocess < ./output.sas
-~/tfd_planning/tfd-src-0.4/downward/search/search y Y a T 10 t 5 e r O 1 C 1 p ./tfd-src-0.4/downward/plan < ./output
+python2.7 $TFD_HOME/translate/translate.py [domain_name].pddl [problem_name].pddl
+$TFD_HOME/preprocess/preprocess < output.sas
+$TFD_HOME/search/search y Y a T 10 t 5 e r O 1 C 1 p $TFD_HOME/plan < output
