@@ -16,5 +16,5 @@ It has some compulsory options, launched as:
 ## About metric-ff
 Metric-ff is a valid planner which solves problems correctly.
 It is easy to install and run, also it has options that allows the user to choose the search algorithm and see different results (A* does not work properly).
-About pddl, it supports some resources: strips, typing, disjunctive-preconditions, equality, conditional-effects and fluents. This last one is the great diference between the ff planner and metric-ff. Also, in the latest version they added a version which handles derived-predicates from pddl 2.2.
+About pddl, it supports some resources: strips, typing, disjunctive-preconditions, equality, conditional-effects and fluents. This last one is the great diference between the ff planner and metric-ff. Also, in the latest release they added a version which handles derived-predicates from pddl 2.2.
 However, metric-ff does not allows durative-actions and nothing related with them, which is a clear disadvantage.
