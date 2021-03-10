@@ -39,7 +39,7 @@ TFD born from from FD (fast downward) planning system. Fast Downward uses hierar
 
 
 
-### Support FD
+### Support TFD
 
 | Requeriment | Suported |
 | ------------- | ------------- |
