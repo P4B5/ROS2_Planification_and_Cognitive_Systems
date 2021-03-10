@@ -38,6 +38,20 @@ Temporal planning also covers temporal dependencies and admits plans with concur
 TFD born from from FD (fast downward) planning system. Fast Downward uses hierarchical decompositions of planning tasks for computing its heuristic function, called the causal graph heuristic, which is very different from traditional HSP-like heuristics based on ignoring negative interactions of operators.
 
 
+
+### Support FD
+
+| Requeriment | Suported |
+| ------------- | ------------- |
+| :strips | 	Yes | 
+| :requeriments	| Yes |
+| :fluents	| Yes | 
+| :equality	| Yes | 
+| :durative-actions | Yes | 
+| :typing	| Yes |
+| :conditional-effects	| Yes |
+| :equality	| Yes |
+
 ### Support FD
 
 | Requeriment | Suported |
