@@ -1,0 +1,67 @@
+set instance kitchen room
+set instance living_room room
+set instance main_bedroom room
+set instance big_bathroom room
+set instance small_bathroom room
+set instance computer_bedroom room
+set instance downstairs room
+set instance corridor corridor
+set instance tv_zone zone
+set instance dining_zone zone
+set instance fridge_zone zone
+set instance dishwasher_zone zone
+set instance computer_zone zone
+set instance bathtub_zone zone
+set instance laptop object
+set instance paper_boat object
+set instance biscuits object
+set instance gray_pillow object
+set instance rubber_duck object
+set instance computer object
+set instance tiago robot
+
+
+set predicate (placesTogether kitchen living_room)
+set predicate (placesTogether living_room kitchen)
+set predicate (placesTogether living_room corridor)
+set predicate (placesTogether corridor living_room)
+set predicate (placesTogether corridor downstairs)
+set predicate (placesTogether downstairs corridor)
+set predicate (placesTogether corridor main_bedroom)
+set predicate (placesTogether main_bedroom corridor)
+set predicate (placesTogether corridor big_bathroom)
+set predicate (placesTogether big_bathroom corridor)
+set predicate (placesTogether corridor computer_bedroom)
+set predicate (placesTogether computer_bedroom corridor)
+set predicate (placesTogether corridor small_bathroom)
+set predicate (placesTogether small_bathroom corridor)
+set predicate (placesTogether kitchen fridge_zone)
+set predicate (placesTogether fridge_zone kitchen)
+set predicate (placesTogether kitchen dishwasher_zone)
+set predicate (placesTogether dishwasher_zone kitchen)
+set predicate (placesTogether living_room tv_zone)
+set predicate (placesTogether tv_zone living_room)
+set predicate (placesTogether living_room dining_zone)
+set predicate (placesTogether dining_zone living_room)
+set predicate (placesTogether computer_bedroom computer_zone)
+set predicate (placesTogether computer_zone computer_bedroom)
+set predicate (placesTogether big_bathroom bathtub_zone)
+set predicate (placesTogether bathtub_zone big_bathroom)
+
+set predicate (robotAt tiago living_room)
+set predicate (robotIdle tiago)
+set predicate (objectAt laptop tv_zone)
+set predicate (objectAt paper_boat living_room)
+set predicate (objectAt biscuits dishwasher_zone)
+set predicate (objectAt gray_pillow main_bedroom)
+set predicate (objectAt rubber_duck bathtub_zone)
+set predicate (objectAt computer computer_zone)
+
+
+set goal (and(robotAt tiago main_bedroom))
+set goal (and(robotAt tiago fridge_zone)(objectAt rubber_duck small_bathroom))
+set goal (and(robotAt tiago tv_zone)(objectAt laptop computer_zone)(objectAt paper_boat dishwasher_zone)(objectAt biscuits dining_zone))    
+
+get plan
+
+run
