@@ -46,6 +46,19 @@ def generate_launch_description():
           'namespace': namespace
           }.items())
 
+    nav2_cmd = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource(os.path.join(
+        get_package_share_directory('robots'),
+        'launch',
+        'tiago.launch.py')),
+    launch_arguments={
+        'autostart': 'true',
+        'params_file': os.path.join(example_dir, 'params', 'apartment_nav2_params.yaml')
+    }.items())
+
+
+
+
     # Specify the actions
     move = Node(
         package='apartment_actions',
