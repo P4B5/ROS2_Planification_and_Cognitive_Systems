@@ -1,0 +1,30 @@
+move_1:
+  ros__parameters:
+    plugins:
+      - plansys2_move_bt_node
+    waypoints: ["kitchen", "living_room", "bedroom_big", "bedroom_small", "bathroom_big", "bathroom_small", "laundry_room", "entrance"]
+    waypoint_coords:
+      kitchen: [3.69, -3.19, 0.0]
+      living_room: [2.85, 3.53, 0.0]
+      bedroom_big: [-5.63, 1.65, 0.0]
+      bedroom_small: [-1.78, 2.85, 0.0]
+      bathroom_big: [-4.16, -0.708, 0.0]
+      bathroom_small: [-4.35, -3.98, 0.0]
+      laundry_room: [-0.685, -4.23, 0.00261]
+      entrance: [-2.05, -4.36, 0.00307]
+transport_1:
+  ros__parameters:
+    plugins:
+      - plansys2_pick_object_bt_node
+      - plansys2_move_bt_node
+      - plansys2_place_object_bt_node
+    waypoints: ["kitchen", "living_room", "badroom", "bedroom_big", "bedroom_small", "bathroom_big", "bathroom_small", "laundry_room", "entrance"]
+    waypoint_coords:
+      kitchen: [3.69, -3.19, 0.0]
+      living_room: [2.85, 3.53, 0.0]
+      bedroom_big: [-5.63, 1.65, 0.0]
+      bedroom_small: [-1.78, 2.85, 0.0]
+      bathroom_big: [-4.16, -0.708, 0.0]
+      bathroom_small: [-4.35, -3.98, 0.0]
+      laundry_room: [-0.685, -4.23, 0.00261]
+      entrance: [-2.05, -4.36, 0.00307]
