@@ -1,6 +1,6 @@
 # Apartment plansys2 example
 
-This is a example of how implement plansys2 + nav2 in an apartment environment
+This is a example of implementation of plansys2 + nav2 in an apartment environment using Tiago Robot to perform the tasks
 
 Launch this implementation:
 ```
