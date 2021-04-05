@@ -44,20 +44,16 @@ def generate_launch_description():
         launch_arguments={
           'model_file': example_dir + '/pddl/apartment.pddl',
           'namespace': namespace
-          }.items())
+        }.items())
 
     nav2_cmd = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(os.path.join(
         get_package_share_directory('robots'),
         'launch',
-        'tiago.launch.py')),
+        'tiago_nodoors.launch.py')),
     launch_arguments={
-        'autostart': 'true',
-        'params_file': os.path.join(example_dir, 'params', 'apartment_nav2_params.yaml')
+        'autostart': 'true'
     }.items())
-
-
-
 
     # Specify the actions
     move = Node(
@@ -92,6 +88,7 @@ def generate_launch_description():
 
     # Declare the launch options
     ld.add_action(plansys2_cmd)
+    ld.add_action(nav2_cmd)
 
     ld.add_action(move)
     ld.add_action(grab_object)
