@@ -51,7 +51,7 @@ public:
     waypoints_["living_room"] = wp;
 
     wp.pose.position.x = 1.5;
-    wp.pose.position.y = -2.7;
+    wp.pose.position.y = -1.97;
     waypoints_["kitchen"] = wp;
 
     wp.pose.position.x = -1.87;
@@ -78,12 +78,12 @@ public:
     wp.pose.position.y = -0.4;
     waypoints_["corridor"] = wp;
 
-    wp.pose.position.x = 3.79;
-    wp.pose.position.y = -4.32;
+    wp.pose.position.x = 3.85;
+    wp.pose.position.y = -3.64;
     waypoints_["fridge_zone"] = wp;
 
-    wp.pose.position.x = 3.83;
-    wp.pose.position.y = -3.03;
+    wp.pose.position.x = 3.53;
+    wp.pose.position.y = -3.23;
     waypoints_["dishwasher_zone"] = wp;
 
     wp.pose.position.x = 2.97;
@@ -98,9 +98,9 @@ public:
     wp.pose.position.y = 1.35;
     waypoints_["computer_zone"] = wp;
 
-    wp.pose.position.x = -6.1;
-    wp.pose.position.y = -1.09;
-    waypoints_["bath_zone"] = wp;    
+    wp.pose.position.x = -5.12;
+    wp.pose.position.y = -0.62;
+    waypoints_["bathtub_zone"] = wp;    
 
     using namespace std::placeholders;
     pos_sub_ = create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
@@ -173,6 +173,19 @@ private:
 
   void do_work()
   {
+    if (progress_ < 1.0) {
+      progress_ += 0.02;
+      send_feedback(progress_, "Move running");
+    } else {
+      finish(true, 1.0, "Move completed");
+
+      progress_ = 0.0;
+      std::cout << std::endl;
+    }
+
+    std::cout << "\r\e[K" << std::flush;
+    std::cout << "Moving ... [" << std::min(100.0, progress_ * 100.0) << "%]  " <<
+      std::flush;
   }
 
   float progress_;

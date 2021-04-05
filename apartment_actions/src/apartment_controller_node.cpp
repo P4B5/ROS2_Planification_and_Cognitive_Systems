@@ -108,6 +108,14 @@ public:
 
   void step()
   {
+    auto feedback = executor_client_->getFeedBack();
+    for (const auto & action_feedback : feedback.action_execution_status) {
+      std::cout << "[" << action_feedback.action_full_name << " " <<
+        action_feedback.completion * 100.0 << "%]";
+      std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
     if (!executor_client_->execute_and_check_plan()) {  // Plan finished
       auto result = executor_client_->getResult();
 
@@ -130,6 +138,7 @@ int main(int argc, char ** argv)
   auto node = std::make_shared<ApartmentController>();
 
   node->init();
+  std::cout << "Planning..." << std::endl;
 
   rclcpp::Rate rate(5);
   while (rclcpp::ok()) {
