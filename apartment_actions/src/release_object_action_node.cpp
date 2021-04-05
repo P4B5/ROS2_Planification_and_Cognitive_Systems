@@ -26,7 +26,7 @@ class ReleaseObjectAction : public plansys2::ActionExecutorClient
 {
 public:
   ReleaseObjectAction()
-  : plansys2::ActionExecutorClient("release_object", 5000ms)
+  : plansys2::ActionExecutorClient("release_object", 200ms)
   {
     progress_ = 0.0;
   }

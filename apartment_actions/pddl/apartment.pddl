@@ -7,36 +7,28 @@
 )
 
 (:predicates
-    (robotAt ?rob - robot ?x - place)
-    (robotIdle ?rob - robot)
-    (robotGrab ?rob - robot ?o - object)
+    (robot_at ?rob - robot ?x - place)
+    (robot_idle ?rob - robot)
+    (robot_grab ?rob - robot ?o - object)
 
-    (objectAt ?o - object ?x - place)
+    (object_at ?o - object ?x - place)
 
-    (placesTogether ?x1 - place ?x2 - place)
+    (places_together ?x1 - place ?x2 - place)
 )
 
 (:durative-action move
     :parameters (?rob - robot ?from - place ?to - place)
     :duration (= ?duration 1)
     :condition (and 
-        (at start (and 
-            (robotAt ?rob ?from)
-            (robotIdle ?rob)
-        ))
-        (over all (and 
-            (placesTogether ?from ?to)
-        ))
+        (at start (robot_at ?rob ?from))
+        (at start (robot_idle ?rob))
+        (over all (places_together ?from ?to))
     )
     :effect (and 
-        (at start (and
-            (not (robotAt ?rob ?from))
-            (not (robotIdle ?rob))
-        ))
-        (at end (and
-            (robotAt ?rob ?to) 
-            (robotIdle ?rob)
-        ))
+        (at start (not (robot_at ?rob ?from)))
+        (at start (not (robot_idle ?rob)))
+        (at end (robot_at ?rob ?to))
+        (at end (robot_idle ?rob))
     )
 )
 
@@ -44,23 +36,15 @@
     :parameters (?rob - robot ?o - object ?x - place)
     :duration (= ?duration 5)
     :condition (and
-        (at start (and 
-            (objectAt ?o ?x)
-            (robotIdle ?rob)
-        ))
-        (over all (and 
-            (robotAt ?rob ?x)
-        ))
+        (at start (object_at ?o ?x))
+        (at start (robot_idle ?rob))
+        (over all (robot_at ?rob ?x))
     )
     :effect (and 
-        (at start (and
-            (not (objectAt ?o ?x))
-            (not (robotIdle ?rob))
-        ))
-        (at end (and 
-            (robotGrab ?rob ?o)
-            (robotIdle ?rob)
-        ))
+        (at start (not (object_at ?o ?x)))
+        (at start (not (robot_idle ?rob)))
+        (at end (robot_grab ?rob ?o))
+        (at end (robot_idle ?rob))
     )
 )
 
@@ -68,23 +52,15 @@
     :parameters (?rob - robot ?o - object ?x - place)
     :duration (= ?duration 5)
     :condition (and 
-        (at start (and 
-            (robotGrab ?rob ?o)
-            (robotIdle ?rob)
-        ))
-        (over all (and 
-            (robotAt ?rob ?x)
-        ))
+        (at start (robot_grab ?rob ?o))
+        (at start (robot_idle ?rob))
+        (over all (robot_at ?rob ?x))
     )
     :effect (and 
-        (at start (and
-            (not (robotGrab ?rob ?o))
-            (not (robotIdle ?rob))
-        ))
-        (at end (and 
-            (objectAt ?o ?x)
-            (robotIdle ?rob)
-        ))
+        (at start (not (robot_grab ?rob ?o)))
+        (at start (not (robot_idle ?rob)))
+        (at end (object_at ?o ?x))
+        (at end (robot_idle ?rob))
     )
 )
 )

@@ -25,7 +25,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     # Get the launch directory
-    example_dir = get_package_share_directory('apartment_actions')
+    example_dir = get_package_share_directory('plansys2_bt_apartment')
     namespace = LaunchConfiguration('namespace')
 
     declare_namespace_cmd = DeclareLaunchArgument(
@@ -42,44 +42,44 @@ def generate_launch_description():
             'launch',
             'plansys2_bringup_launch_monolithic.py')),
         launch_arguments={
-          'model_file': example_dir + '/pddl/apartment.pddl',
+          'model_file': example_dir + '/pddl/aparment_bt.pddl',
           'namespace': namespace
-        }.items())
-
-    nav2_cmd = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource(os.path.join(
-        get_package_share_directory('robots'),
-        'launch',
-        'tiago_nodoors.launch.py')),
-    launch_arguments={
-        'autostart': 'true'
-    }.items())
+          }.items())
 
     # Specify the actions
-    move = Node(
-        package='apartment_actions',
-        executable='move_action_node',
-        name='move_action_node',
+    move_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='apartment_bt_action_node',
+        name='move',
         namespace=namespace,
         output='screen',
-        parameters=[])
-    
-    grab_object = Node(
-        package='apartment_actions',
-        executable='grab_object_action_node',
-        name='grab_object_action_node',
+        parameters=[
+          example_dir + '/config/params.yaml',
+          {
+            'action_name': 'move',
+            'publisher_port': 1668,
+            'server_port': 1669,
+            'bt_xml_file': example_dir + '/behavior_trees_xml/move.xml'
+          }
+        ])
+
+    transport_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='apartment_bt_action_node',
+        name='transport',
         namespace=namespace,
         output='screen',
-        parameters=[])
-    
-    release_object = Node(
-        package='apartment_actions',
-        executable='release_object_action_node',
-        name='release_object_action_node',
-        namespace=namespace,
-        output='screen',
-        parameters=[])
-    # Create the launch description and populate
+        parameters=[
+          example_dir + '/config/params.yaml',
+          {
+            'action_name': 'transport',
+            'publisher_port': 1674,
+            'server_port': 1675,
+            'bt_xml_file': example_dir + '/behavior_trees_xml/transport.xml'
+          }
+        ])
+  
+
     ld = LaunchDescription()
 
     # Set environment variables
@@ -88,10 +88,9 @@ def generate_launch_description():
 
     # Declare the launch options
     ld.add_action(plansys2_cmd)
-    ld.add_action(nav2_cmd)
 
-    ld.add_action(move)
-    ld.add_action(grab_object)
-    ld.add_action(release_object)
+    ld.add_action(move_cmd)
+    ld.add_action(transport_cmd)
+
 
     return ld
