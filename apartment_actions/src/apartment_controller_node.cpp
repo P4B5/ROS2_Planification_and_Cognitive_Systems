@@ -103,7 +103,7 @@ public:
 
     problem_expert_->setGoal(
       plansys2::Goal(
-        "(and(robot_at tiago fridge_zone)(object_at rubber_duck small_bathroom))"));
+        "(and(robot_at tiago dining_zone)(object_at rubber_duck small_bathroom))"));
   }
 
   void step()
@@ -111,7 +111,7 @@ public:
     auto feedback = executor_client_->getFeedBack();
     for (const auto & action_feedback : feedback.action_execution_status) {
       if(action_feedback.completion != 0 && action_feedback.completion != 1){
-        std::cout << "[" << action_feedback.action << " " <<
+        std::cout << "[" << action_feedback.action_full_name << " " <<
                 action_feedback.completion * 100.0 << "%]";
         std::cout << std::endl;
       }
