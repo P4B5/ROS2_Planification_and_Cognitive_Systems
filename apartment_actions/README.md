@@ -10,5 +10,5 @@ ros2 run apartment_actions apartment_controller_node
 ```
 
 Watch the how it works: 
- Simple example --> https://youtu.be/MHljhGuabaU
- Complex example --> https://youtu.be/lWUECwTwwPQ
+Simple example --> https://youtu.be/MHljhGuabaU
+Complex example --> https://youtu.be/lWUECwTwwPQ
