@@ -26,7 +26,7 @@ class GrabObjectAction : public plansys2::ActionExecutorClient
 {
 public:
   GrabObjectAction()
-  : plansys2::ActionExecutorClient("grab_object", 5000ms)
+  : plansys2::ActionExecutorClient("grab_object", 200ms)
   {
     progress_ = 0.0;
   }
