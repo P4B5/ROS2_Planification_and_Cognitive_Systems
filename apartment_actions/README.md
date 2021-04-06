@@ -5,8 +5,10 @@ This is a example of implementation of plansys2 + nav2 in an apartment environme
 Launch this implementation:
 ```
 ros2 launch apartment_actions plansys2_apartment_launch.py
-rviz2
+rviz2 (set initial pose)
 ros2 run apartment_actions apartment_controller_node
 ```
 
-Watch the how it works: https://youtu.be/MHljhGuabaU
+Watch the how it works: 
+Simple example --> https://youtu.be/MHljhGuabaU
+Complex example --> https://youtu.be/lWUECwTwwPQ
