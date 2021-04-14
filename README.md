@@ -12,7 +12,7 @@ This repo is maintained by:
 - [Pablo Castellanos Lopez](https://github.com/P4B5)
 - [Mario Esteban Fernández](https://github.com/marioesteban11)
 
-Projects:
+Main projects:
 
 1. Scan Fake: A fake scan to test ROS2 and rviz2: [Scan Fake](https://github.com/P4B5/ROS2_Planification_and_Cognitive_Systems/tree/main/scan_fake)
 
@@ -22,6 +22,10 @@ Projects:
 
 4. Apartment navigation: A complete robot pick&place task integrating plansys2 and nav2 inside an apartment: [Apartment navigation](https://github.com/P4B5/ROS2_Planification_and_Cognitive_Systems/tree/main/apartment_actions)
 
+
+Additional projects:
+
+1. Hospital World: A hospital modeled in webots for testing Tiago robot: [Hospital](https://github.com/P4B5/hospital_webots)
 
 
 ![cheatsheet1](./docs/ros2_cheatsheet_1.png)
