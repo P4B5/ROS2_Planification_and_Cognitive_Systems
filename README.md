@@ -6,7 +6,7 @@
 Repository for planification and cognitive systems course at URJC
 
 
-This repo is maintained by:
+This repo is maintained by **Team bROS**:
 
 - [Alejandro Sanchez Alvarez](https://github.com/alexs2900)
 - [Pablo Castellanos Lopez](https://github.com/P4B5)
