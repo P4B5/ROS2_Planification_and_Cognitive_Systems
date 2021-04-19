@@ -22,11 +22,11 @@
 
 using namespace std::chrono_literals;
 
-class ApartmentAction : public plansys2::ActionExecutorClient
+class GrabObjectAction : public plansys2::ActionExecutorClient
 {
 public:
-  ApartmentAction()
-  : plansys2::ActionExecutorClient("apartment", 500ms)
+  GrabObjectAction()
+  : plansys2::ActionExecutorClient("grab_object", 200ms)
   {
     progress_ = 0.0;
   }
@@ -35,17 +35,17 @@ private:
   void do_work()
   {
     if (progress_ < 1.0) {
-      progress_ += 0.05;
-      send_feedback(progress_, "Aparment running");
+      progress_ += 0.02;
+      send_feedback(progress_, "Grab_object running");
     } else {
-      finish(true, 1.0, "Apartment completed");
+      finish(true, 1.0, "Grab_object completed");
 
       progress_ = 0.0;
       std::cout << std::endl;
     }
 
     std::cout << "\r\e[K" << std::flush;
-    std::cout << "Tiding up apartament ... [" << std::min(100.0, progress_ * 100.0) << "%]  " <<
+    std::cout << "Grabbing object ... [" << std::min(100.0, progress_ * 100.0) << "%]  " <<
       std::flush;
   }
 
@@ -55,9 +55,9 @@ private:
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
-  auto node = std::make_shared<ApartmentAction>();
+  auto node = std::make_shared<GrabObjectAction>();
 
-  node->set_parameter(rclcpp::Parameter("action_name", "apartment"));
+  node->set_parameter(rclcpp::Parameter("action_name", "grab_object"));
   node->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
 
   rclcpp::spin(node->get_node_base_interface());
