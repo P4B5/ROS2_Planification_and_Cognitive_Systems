@@ -10,6 +10,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
   <depend>rclcpp_action</depend>
   <depend>plansys2_msgs</depend>
   <depend>plansys2_executor</depend>
@@ -17,7 +18,7 @@
   <depend>nav2_msgs</depend>
   <depend>plansys2_problem_expert</depend>
   <depend>plansys2_domain_expert</depend>
-
+  <depend>lifecycle_msgs</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
