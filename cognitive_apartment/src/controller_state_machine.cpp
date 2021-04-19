@@ -112,7 +112,7 @@ public:
     auto feedback = executor_client_->getFeedBack();
     for (const auto & action_feedback : feedback.action_execution_status) {
       if(action_feedback.completion != 0 && action_feedback.completion != 1){
-        std::cout << "[" << action_feedback.action_full_name << " " <<
+        std::cout << "[" << action_feedback.action << " " <<
                 action_feedback.completion * 100.0 << "%]";
         std::cout << std::endl;
         std::cout << action_feedback.arguments[2] << std::endl;
