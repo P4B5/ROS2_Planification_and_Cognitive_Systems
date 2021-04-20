@@ -33,6 +33,9 @@ include_directories(fsm)
 add_executable(move_action_node src/move_action_node.cpp)
 ament_target_dependencies(move_action_node ${dependencies})
 
+add_executable(explore_action_node src/explore_action_node.cpp)
+ament_target_dependencies(explore_action_node ${dependencies})
+
 add_executable(grab_object_action_node src/grab_object_action_node.cpp)
 ament_target_dependencies(grab_object_action_node ${dependencies})
 
@@ -53,6 +56,7 @@ install(DIRECTORY launch pddl DESTINATION share/${PROJECT_NAME})
 
 install(TARGETS
   move_action_node
+  explore_action_node
   grab_object_action_node
   release_object_action_node
   controller_state_machine
