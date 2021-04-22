@@ -101,22 +101,21 @@ public:
     problem_expert_->addPredicate(plansys2::Predicate("(object_at rubber_duck bathtub_zone)"));
     problem_expert_->addPredicate(plansys2::Predicate("(object_at computer computer_zone)"));
 
-     problem_expert_->setGoal(
-       plansys2::Goal(
-         "(and(robot_at tiago dining_zone)(object_at rubber_duck small_bathroom))"));
+    problem_expert_->setGoal(
+      plansys2::Goal(
+        "(and(robot_at tiago dining_zone)(object_at rubber_duck small_bathroom))"));
   }
 
   void step()
   {
+
     //SEND INFO TO BLACKBOARD
     auto feedback = executor_client_->getFeedBack();
     for (const auto & action_feedback : feedback.action_execution_status) {
       if(action_feedback.completion != 0 && action_feedback.completion != 1){
-        std::cout << "[" << action_feedback.action << " " <<
+        std::cout << "[" << " " <<
                 action_feedback.completion * 100.0 << "%]";
         std::cout << std::endl;
-        std::cout << action_feedback.arguments[2] << std::endl;
-        std::cout << action_feedback.action << std::endl;
       }
     }
 
