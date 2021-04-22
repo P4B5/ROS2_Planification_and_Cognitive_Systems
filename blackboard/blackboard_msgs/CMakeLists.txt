@@ -13,7 +13,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
     "msg/Entry.msg"
     "srv/AddEntry.srv"
     "srv/GetEntry.srv"
-  DEPENDENCIES builtin_interfaces std_msgs
+  DEPENDENCIES builtin_interfaces std_msgs geometry_msgs octomap_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)

@@ -52,20 +52,31 @@ TEST(blackboard_node, add_get_entry)
   tf.transform.rotation.w = 1;
   auto entry_4 = blackboard::Entry<geometry_msgs::msg::TransformStamped>::make_shared(tf);
 
+  octomap_msgs::msg::Octomap octomap;
+  octomap.header.frame_id = "map";
+  octomap.binary = true;
+  octomap.id = "octomap";
+  octomap.resolution = 5.0;
+  octomap.data = {1, 2, 1, 4, 5};
+  auto entry_5 = blackboard::Entry<octomap_msgs::msg::Octomap>::make_shared(octomap);
+
   client_1->add_entry("my_entry_1", entry_1->to_base());
   client_1->add_entry("my_entry_2", entry_2->to_base());
   client_1->add_entry("my_entry_3", entry_3->to_base());
-  client_1->add_entry("my_entry_3", entry_4->to_base());
+  client_1->add_entry("my_entry_4", entry_4->to_base());
+  client_1->add_entry("my_entry_5", entry_5->to_base());
 
   auto entry_1_got = blackboard::as<bool>(client_1->get_entry("my_entry_1"));
   auto entry_2_got = blackboard::as<std::string>(client_1->get_entry("my_entry_2"));
   auto entry_3_got = blackboard::as<float>(client_1->get_entry("my_entry_3"));
   auto entry_4_got = blackboard::as<geometry_msgs::msg::TransformStamped>(client_1->get_entry("my_entry_4"));
+  auto entry_5_got = blackboard::as<octomap_msgs::msg::Octomap>(client_1->get_entry("my_entry_5"));
 
   ASSERT_TRUE(entry_1_got->data_);
   ASSERT_EQ(entry_2_got->data_, "Hi!!");
   ASSERT_FLOAT_EQ(entry_3_got->data_, 3.5);
   ASSERT_EQ(entry_4_got->data_, tf);
+  ASSERT_EQ(entry_5_got->data_, octomap);
 
   finish = true;
   t.join();
