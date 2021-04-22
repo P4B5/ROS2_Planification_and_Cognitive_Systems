@@ -1,11 +1,15 @@
 <component id="hfsm_cognitive_apartment">
- <state id="init" x="-329" y="-753" initial="true"/>
- <state id="move" x="-331" y="-601" initial="false"/>
- <state id="place" x="-190" y="-427" initial="false"/>
- <state id="pick" x="-36" y="-601" initial="false"/>
- <transition dst="move" src="pick"/>
- <transition dst="move" src="init"/>
- <transition dst="pick" src="move"/>
- <transition dst="move" src="place"/>
- <transition dst="place" src="move"/>
+ <state id="bathroom" initial="false" x="-202" y="-821"/>
+ <state id="corridor" initial="false" x="-376" y="-827"/>
+ <state id="living_room" initial="false" x="-552" y="-823"/>
+ <state id="kitchen" initial="false" x="-720" y="-827"/>
+ <state id="init" initial="true" x="-717" y="-1017"/>
+ <state id="finish" initial="false" x="115" y="-824"/>
+ <state id="bedroom" initial="false" x="-36" y="-827"/>
+ <transition dst="bathroom" src="corridor"/>
+ <transition dst="finish" src="bedroom"/>
+ <transition dst="kitchen" src="init"/>
+ <transition dst="living_room" src="kitchen"/>
+ <transition dst="corridor" src="living_room"/>
+ <transition dst="bedroom" src="bathroom"/>
 </component>
