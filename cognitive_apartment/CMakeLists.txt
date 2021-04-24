@@ -39,6 +39,9 @@ ament_target_dependencies(grab_object_action_node ${dependencies})
 add_executable(release_object_action_node src/release_object_action_node.cpp)
 ament_target_dependencies(release_object_action_node ${dependencies})
 
+add_executable(explore_action_node src/explore_action_node.cpp)
+ament_target_dependencies(explore_action_node ${dependencies})
+
 add_executable(controller_state_machine src/controller_state_machine.cpp)
 ament_target_dependencies(controller_state_machine ${dependencies})
 
@@ -52,6 +55,7 @@ ament_target_dependencies(hfsm_cognitive_apartment ${dependencies})
 install(DIRECTORY launch pddl DESTINATION share/${PROJECT_NAME})
 
 install(TARGETS
+  explore_action_node
   move_action_node
   grab_object_action_node
   release_object_action_node

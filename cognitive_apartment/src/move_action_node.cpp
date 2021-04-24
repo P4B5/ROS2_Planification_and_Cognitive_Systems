@@ -50,8 +50,8 @@ public:
     wp.pose.orientation.w = 0.0;
     waypoints_["living_room"] = wp;
 
-    wp.pose.position.x = 1.5;
-    wp.pose.position.y = -1.97;
+    wp.pose.position.x = 1.15;
+    wp.pose.position.y = -2.6;
     waypoints_["kitchen"] = wp;
 
     wp.pose.position.x = -1.87;
@@ -74,8 +74,8 @@ public:
     wp.pose.position.y = -3.80;
     waypoints_["downstairs"] = wp;
 
-    wp.pose.position.x = -2.1;
-    wp.pose.position.y = -0.4;
+    wp.pose.position.x = -2.04;
+    wp.pose.position.y = -1.72;
     waypoints_["corridor"] = wp;
 
     wp.pose.position.x = 3.85;
@@ -90,8 +90,8 @@ public:
     wp.pose.position.y = -0.56;
     waypoints_["tv_zone"] = wp;
 
-    wp.pose.position.x = 2.93;
-    wp.pose.position.y = 3.89;
+    wp.pose.position.x = 2.06;
+    wp.pose.position.y = 3.24;
     waypoints_["dining_zone"] = wp;
 
     wp.pose.position.x = -6.28;

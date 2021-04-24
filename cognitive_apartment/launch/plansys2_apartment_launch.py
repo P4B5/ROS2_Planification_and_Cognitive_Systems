@@ -42,7 +42,7 @@ def generate_launch_description():
             'launch',
             'plansys2_bringup_launch_monolithic.py')),
         launch_arguments={
-          'model_file': example_dir + '/pddl/apartment.pddl',
+          'model_file': example_dir + '/pddl/cognitive_apartment.pddl',
           'namespace': namespace
         }.items())
 
@@ -60,6 +60,14 @@ def generate_launch_description():
         package='cognitive_apartment',
         executable='move_action_node',
         name='move_action_node',
+        namespace=namespace,
+        output='screen',
+        parameters=[])
+    
+    explore = Node(
+        package='cognitive_apartment',
+        executable='explore_action_node',
+        name='explore_action_node',
         namespace=namespace,
         output='screen',
         parameters=[])
@@ -91,6 +99,7 @@ def generate_launch_description():
     ld.add_action(nav2_cmd)
 
     ld.add_action(move)
+    ld.add_action(explore)
     ld.add_action(grab_object)
     ld.add_action(release_object)
 

@@ -1,0 +1,7 @@
+ament_add_gtest(blackboard_test blackboard_test.cpp)
+target_compile_definitions(blackboard_test PUBLIC "PLUGINLIB__DISABLE_BOOST_FUNCTIONS")
+target_link_libraries(blackboard_test ${PROJECT_NAME})
+
+ament_add_gtest(blackboard_node_test blackboard_node_test.cpp)
+target_compile_definitions(blackboard_node_test PUBLIC "PLUGINLIB__DISABLE_BOOST_FUNCTIONS")
+target_link_libraries(blackboard_node_test ${PROJECT_NAME})
