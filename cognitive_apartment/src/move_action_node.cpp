@@ -34,7 +34,7 @@ class MoveAction : public plansys2::ActionExecutorClient
 {
 public:
   MoveAction()
-  : plansys2::ActionExecutorClient("move", 1000ms)
+  : plansys2::ActionExecutorClient("move", 2000ms)
   {
     progress_ = 0.0;
 
@@ -75,7 +75,7 @@ public:
     waypoints_["downstairs"] = wp;
 
     wp.pose.position.x = -2.04;
-    wp.pose.position.y = -1.72;
+    wp.pose.position.y = -0.4;
     waypoints_["corridor"] = wp;
 
     wp.pose.position.x = 3.85;
@@ -174,7 +174,7 @@ private:
   void do_work()
   {
     if (progress_ < 1.0) {
-      progress_ += 0.02;
+      progress_ += 0.01;
       send_feedback(progress_, "Move running");
     } else {
       finish(true, 1.0, "Move completed");
