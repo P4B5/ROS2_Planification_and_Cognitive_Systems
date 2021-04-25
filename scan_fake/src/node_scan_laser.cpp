@@ -69,6 +69,7 @@ int main(int argc, char * argv[])
   node_sub = rclcpp::Node::make_shared("node_scan_sub");
   auto subscription = node_sub->create_subscription<sensor_msgs::msg::LaserScan>(
     "laser_data", rclcpp::QoS(100).best_effort(), sub_callback);
+    
   rclcpp::Rate loop_rate(1000ms);  // 1000ms = 1s = 1Hz
 
   rclcpp::executors::SingleThreadedExecutor executor;
