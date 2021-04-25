@@ -53,6 +53,38 @@ void hfsm_cognitive_apartment::tick()
   std_msgs::msg::String msg;
 
   switch (state_) {
+    case INIT:
+      init_code_iterative();
+
+      msg.data = "init";
+      state_pub_->publish(msg);
+
+      if (init_2_kitchen()) {
+        deactivateAllDeps();
+
+        state_ = KITCHEN;
+        state_ts_ = now();
+
+        kitchen_activateDeps();
+        kitchen_code_once();
+      }
+      break;
+    case LIVING_ROOM:
+      living_room_code_iterative();
+
+      msg.data = "living_room";
+      state_pub_->publish(msg);
+
+      if (living_room_2_corridor()) {
+        deactivateAllDeps();
+
+        state_ = CORRIDOR;
+        state_ts_ = now();
+
+        corridor_activateDeps();
+        corridor_code_once();
+      }
+      break;
     case BATHROOM:
       bathroom_code_iterative();
 
@@ -85,22 +117,6 @@ void hfsm_cognitive_apartment::tick()
         bathroom_code_once();
       }
       break;
-    case LIVING_ROOM:
-      living_room_code_iterative();
-
-      msg.data = "living_room";
-      state_pub_->publish(msg);
-
-      if (living_room_2_corridor()) {
-        deactivateAllDeps();
-
-        state_ = CORRIDOR;
-        state_ts_ = now();
-
-        corridor_activateDeps();
-        corridor_code_once();
-      }
-      break;
     case KITCHEN:
       kitchen_code_iterative();
 
@@ -115,22 +131,6 @@ void hfsm_cognitive_apartment::tick()
 
         living_room_activateDeps();
         living_room_code_once();
-      }
-      break;
-    case INIT:
-      init_code_iterative();
-
-      msg.data = "init";
-      state_pub_->publish(msg);
-
-      if (init_2_kitchen()) {
-        deactivateAllDeps();
-
-        state_ = KITCHEN;
-        state_ts_ = now();
-
-        kitchen_activateDeps();
-        kitchen_code_once();
       }
       break;
     case FINISH:
@@ -165,6 +165,14 @@ hfsm_cognitive_apartment::deactivateAllDeps()
 }
 
 void
+hfsm_cognitive_apartment::init_activateDeps()
+{
+}
+void
+hfsm_cognitive_apartment::living_room_activateDeps()
+{
+}
+void
 hfsm_cognitive_apartment::bathroom_activateDeps()
 {
 }
@@ -173,15 +181,7 @@ hfsm_cognitive_apartment::corridor_activateDeps()
 {
 }
 void
-hfsm_cognitive_apartment::living_room_activateDeps()
-{
-}
-void
 hfsm_cognitive_apartment::kitchen_activateDeps()
-{
-}
-void
-hfsm_cognitive_apartment::init_activateDeps()
 {
 }
 void

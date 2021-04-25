@@ -12,6 +12,7 @@ find_package(std_msgs REQUIRED)
 find_package(plansys2_domain_expert REQUIRED)
 find_package(rclcpp_cascade_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
+find_package(blackboard REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -26,6 +27,7 @@ set(dependencies
   std_msgs
   rclcpp_cascade_lifecycle
   lifecycle_msgs
+  blackboard
 )
 
 include_directories(fsm)
@@ -42,9 +44,6 @@ ament_target_dependencies(release_object_action_node ${dependencies})
 add_executable(explore_action_node src/explore_action_node.cpp)
 ament_target_dependencies(explore_action_node ${dependencies})
 
-add_executable(controller_state_machine src/controller_state_machine.cpp)
-ament_target_dependencies(controller_state_machine ${dependencies})
-
 add_executable(hfsm_cognitive_apartment 
   src/hfsm_imp_cognitive_apartment.cpp
   fsm/hfsm_cognitive_apartment.cpp
@@ -59,7 +58,6 @@ install(TARGETS
   move_action_node
   grab_object_action_node
   release_object_action_node
-  controller_state_machine
   hfsm_cognitive_apartment
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
