@@ -1,3 +1,17 @@
+// Copyright 2019 Intelligent Robotics Lab
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include <memory>
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
@@ -8,7 +22,9 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 
 #include "hfsm_cognitive_apartment.hpp"
+
 #include "../../blackboard/blackboard/include/blackboard/BlackBoard.hpp"
+
 
 //#include "blackboard/BlackBoard.hpp"
 using std::placeholders::_1;
@@ -54,14 +70,12 @@ public:
   }
 
 
-  bool get_plan_state(){
+   bool get_plan_state(){
      auto feedback = executor_client_->getFeedBack();
       if (executor_client_->execute_and_check_plan() && executor_client_->getResult()) {
          if (executor_client_->getResult().value().success) {
-               std::cout << "Successful finished " << std::endl;
                return true;
          } else {
-            //CHANGE HERE THE PRINT TO VISUALIZE CORRECTLY THE STATUS
             for (const auto & action_feedback : feedback.action_execution_status) {
                if (action_feedback.status == plansys2_msgs::msg::ActionExecutionInfo::FAILED) {
                std::cout << "[" << action_feedback.action << "] finished with error: " <<
@@ -72,7 +86,7 @@ public:
          }
       }
       return false;
-  }
+   }
 
    bool corridor_2_bathroom() {
       if(get_plan_state() == true){
@@ -96,10 +110,10 @@ public:
             return true;
          }
       }
-   return false;
+      return false;
    }
 
-    bool kitchen_2_living_room() {
+   bool kitchen_2_living_room() {
       if(get_plan_state() == true){
          problem_expert_->removePredicate(plansys2::Predicate("(place_explored kitchen)"));
          problem_expert_->setGoal(plansys2::Goal("(and(place_explored dining_zone))"));
@@ -109,8 +123,7 @@ public:
          }
       }
       return false;
-    }
-
+   }
 
    bool living_room_2_corridor() {
       if(get_plan_state() == true){
@@ -124,90 +137,108 @@ public:
       return false;
    }
 
-    bool init_2_kitchen(){
+   bool init_2_kitchen(){
       if (executor_client_->start_plan_execution()) {
          state_ = KITCHEN;
+         //auto kitchen_explored = blackboard::Entry<bool>::make_shared(true);
+         //auto entry_base = kitchen_explored->to_base();
+         //blackboard->add_entry("is_kitchen_explored", kitchen_explored->to_base());
          return true;
       }
       return false;
-    }
+   }
 
-      //----- ONCE -----
+   bool bedroom_2_finish(){
+      if(get_plan_state() == true){
+         problem_expert_->removePredicate(plansys2::Predicate("(place_explored computer_zone)"));
+         problem_expert_->setGoal(plansys2::Goal("(and(robot_at tiago living_room))"));
+         if (executor_client_->start_plan_execution()) {
+            state_ = FINISH;
+            //auto entry_1_got = blackboard::as<bool>(blackboard->get_entry("is_kitchen_explored"));
+            //std::cout << "is_kitchen_explored: ";
+            //std::cout << entry_1_got << std::endl;
+            return true;
+         }
+      }
+      return false;
+   }
 
-     void kitchen_code_once() {
-      //   RCLCPP_INFO(get_logger(), "Robot at KITCHEN state once");
-      
-     }
-     void corridor_code_once() {
-      //   RCLCPP_INFO(get_logger(), "Robot at CORRIDOR");
-     }
+   //----- ONCE -----
 
-     void bedroom_code_once() {
-      //   RCLCPP_INFO(get_logger(), "Robot at BEDROOM");
-     }
+   void init_code_once()
+   {
+      RCLCPP_INFO(get_logger(), "INIT STATE");    
+      auto node = std::make_shared<rclcpp::Node>("node_aux");
+      problem_expert_ = std::make_shared<plansys2::ProblemExpertClient>(node);
+      executor_client_ = std::make_shared<plansys2::ExecutorClient>(node);
+      init_knowledge();
+   }
 
-     void living_room_code_once() {
-      //   RCLCPP_INFO(get_logger(), "Robot at LIVING ROOM");
-     }
+   void kitchen_code_once() {
+      RCLCPP_INFO(get_logger(), "KITCHEN STATE");    
+   }
 
-     void bathroom_code_once() {
-      
-     }
-   
+   void corridor_code_once() {
+      RCLCPP_INFO(get_logger(), "CORRIDOR STATE");
+   }
+
+   void bedroom_code_once() {
+      RCLCPP_INFO(get_logger(), "BEDROOM STATE");
+   }
+
+   void living_room_code_once() {
+      RCLCPP_INFO(get_logger(), "LIVING ROOM STATE");
+   }
+
+   void bathroom_code_once() {
+      RCLCPP_INFO(get_logger(), "BATHROOM STATE");
+   }
+
+   void finish_code_once() {
+      RCLCPP_INFO(get_logger(), "FINISH STATE");
+   }
+
 
    // ----- ITERATIVE -----
 
    void show_planer_state(){
-       auto feedback = executor_client_->getFeedBack();
-         for (const auto & action_feedback : feedback.action_execution_status) {
-            std::cout << "[" << action_feedback.action << " " <<
+      auto feedback = executor_client_->getFeedBack();
+      for (const auto & action_feedback : feedback.action_execution_status) {
+         if(action_feedback.completion != 0 && action_feedback.completion != 1){
+            std::cout << "[" << action_feedback.action_full_name << " " <<
                action_feedback.completion * 100.0 << "%]";
+            std::cout << std::endl;
          }
-         std::cout << std::endl;
+      }   
    }
 
-     void corridor_code_iterative() {
-         RCLCPP_INFO(get_logger(), "CORRIDOR STATE");
-         show_planer_state();
-     }
-   
-     void kitchen_code_iterative() {
-         RCLCPP_INFO(get_logger(), "KITCHEN STATE");
-         show_planer_state();
-     }
-
-     void bedroom_code_iterative() {
-         RCLCPP_INFO(get_logger(), "BEDROOM STATE");
-         show_planer_state();
-     }
-   
-     void bathroom_code_iterative() {
-         RCLCPP_INFO(get_logger(), "BATHROOM STATE");
-         show_planer_state();
-     }
-     
-     void living_room_code_iterative() {
-        RCLCPP_INFO(get_logger(), "LIVING ROOM STATE");
-        show_planer_state();
-     }
-    
-     void init_code_iterative() {
-        // RCLCPP_INFO(get_logger(), "Robot at ");
-     }
-
-    
-   void init_code_once()
-   {
-      auto node = std::make_shared<rclcpp::Node>("node_aux");
-      problem_expert_ = std::make_shared<plansys2::ProblemExpertClient>(node);
-      executor_client_ = std::make_shared<plansys2::ExecutorClient>(node);
-      RCLCPP_INFO(get_logger(), "Predicates successful stablished");
-      init_knowledge();
+   void corridor_code_iterative() {
+      show_planer_state();
    }
+
+   void kitchen_code_iterative() {
+      show_planer_state();
+   }
+
+   void bedroom_code_iterative() { 
+      show_planer_state();
+   }
+
+   void bathroom_code_iterative() {
+      show_planer_state();
+   }
+   
+   void living_room_code_iterative() {
+      show_planer_state();
+   }
+
+   void finsish_code_iterative() {
+      show_planer_state();
+   }
+    
 
   void init_knowledge()
   {
-      // RCLCPP_INFO(get_logger(), "Stablishing predicates");
       problem_expert_->addInstance(plansys2::Instance{"kitchen", "room"});
       problem_expert_->addInstance(plansys2::Instance{"living_room", "room"});
       problem_expert_->addInstance(plansys2::Instance{"main_bedroom", "room"});
@@ -268,7 +299,7 @@ public:
       
 
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored kitchen))"));
-  }
+   }
 
 
    private:
@@ -276,11 +307,10 @@ public:
       StateType state_;
       std::shared_ptr<plansys2::ProblemExpertClient> problem_expert_;
       std::shared_ptr<plansys2::ExecutorClient> executor_client_;
+      //std::shared_ptr<blackboard::BlackBoard> blackboard;
       
 
 };
-
-
 
 
 int main(int argc, char ** argv)
@@ -291,7 +321,7 @@ int main(int argc, char ** argv)
    
    auto test_node = std::make_shared<TestComp>();
    rclcpp::executors::SingleThreadedExecutor executor;
-    
+   
    executor.add_node(my_hfsm->get_node_base_interface());
    executor.add_node(test_node->get_node_base_interface());
    my_hfsm->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
@@ -301,10 +331,9 @@ int main(int argc, char ** argv)
 
   
    executor.spin();
-   std::cout << "finish configuration\n";
    rclcpp::shutdown();
-
-  return 0;
+   
+   return 0;
 }
 
 
