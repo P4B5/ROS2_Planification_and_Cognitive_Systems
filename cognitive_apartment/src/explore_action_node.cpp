@@ -28,7 +28,7 @@ class ExploreAction : public plansys2::ActionExecutorClient
 {
 public:
   ExploreAction()
-  : plansys2::ActionExecutorClient("explore", 1000ms)
+  : plansys2::ActionExecutorClient("explore", 2000ms)
   {
   }
 
