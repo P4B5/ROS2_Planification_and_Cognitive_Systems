@@ -48,6 +48,12 @@ add_executable(blackboard_main
 ament_target_dependencies(blackboard_main ${dependencies})
 target_link_libraries(blackboard_main ${PROJECT_NAME})
 
+install(DIRECTORY include/
+  DESTINATION include/
+)
+
+install(DIRECTORY DESTINATION share/${PROJECT_NAME})
+
 install(TARGETS
   ${PROJECT_NAME}
   blackboard_main
@@ -63,5 +69,9 @@ if(BUILD_TESTING)
   add_subdirectory(test)
 
 endif()
+
+ament_export_include_directories(include)
+ament_export_libraries(${PROJECT_NAME})
+ament_export_dependencies(${dependencies})
 
 ament_package()
