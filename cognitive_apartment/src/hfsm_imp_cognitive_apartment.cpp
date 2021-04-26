@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <memory>
+#include <string>
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "lifecycle_msgs/msg/transition.hpp"
@@ -23,12 +24,10 @@
 
 #include "hfsm_cognitive_apartment.hpp"
 
-#include "../../blackboard/blackboard/include/blackboard/BlackBoard.hpp"
+#include "blackboard/BlackBoard.hpp"
 
 
-//#include "blackboard/BlackBoard.hpp"
 using std::placeholders::_1;
-
 
 
 class TestComp : public rclcpp_cascade_lifecycle::CascadeLifecycleNode
@@ -57,9 +56,6 @@ class TestComp : public rclcpp_cascade_lifecycle::CascadeLifecycleNode
 };
 
 
-
-
-
 class  hsfm_imp_cognitive_apartment: public cascade_hfsm::hfsm_cognitive_apartment
 {
 public:
@@ -68,7 +64,6 @@ public:
   {
 
   }
-
 
    bool get_plan_state(){
      auto feedback = executor_client_->getFeedBack();
@@ -94,7 +89,6 @@ public:
          problem_expert_->setGoal(plansys2::Goal("(and(place_explored big_bathroom))"));
 
          if (executor_client_->start_plan_execution()) {
-            state_ = BATHROOM;
             return true;
          }
       }
@@ -106,7 +100,6 @@ public:
          problem_expert_->removePredicate(plansys2::Predicate("(place_explored big_bathroom)"));
          problem_expert_->setGoal(plansys2::Goal("(and(place_explored computer_zone))"));
          if (executor_client_->start_plan_execution()) {
-            state_ = BEDROOM;
             return true;
          }
       }
@@ -118,7 +111,6 @@ public:
          problem_expert_->removePredicate(plansys2::Predicate("(place_explored kitchen)"));
          problem_expert_->setGoal(plansys2::Goal("(and(place_explored dining_zone))"));
          if (executor_client_->start_plan_execution()) {
-            state_ = LIVING_ROOM;
             return true;
          }
       }
@@ -130,7 +122,6 @@ public:
          problem_expert_->removePredicate(plansys2::Predicate("(place_explored dining_zone)"));
          problem_expert_->setGoal(plansys2::Goal("(and(place_explored corridor))"));
          if (executor_client_->start_plan_execution()) {
-            state_ = CORRIDOR;
             return true;
          }
       }
@@ -139,10 +130,6 @@ public:
 
    bool init_2_kitchen(){
       if (executor_client_->start_plan_execution()) {
-         state_ = KITCHEN;
-         //auto kitchen_explored = blackboard::Entry<bool>::make_shared(true);
-         //auto entry_base = kitchen_explored->to_base();
-         //blackboard->add_entry("is_kitchen_explored", kitchen_explored->to_base());
          return true;
       }
       return false;
@@ -153,10 +140,6 @@ public:
          problem_expert_->removePredicate(plansys2::Predicate("(place_explored computer_zone)"));
          problem_expert_->setGoal(plansys2::Goal("(and(robot_at tiago living_room))"));
          if (executor_client_->start_plan_execution()) {
-            state_ = FINISH;
-            //auto entry_1_got = blackboard::as<bool>(blackboard->get_entry("is_kitchen_explored"));
-            //std::cout << "is_kitchen_explored: ";
-            //std::cout << entry_1_got << std::endl;
             return true;
          }
       }
@@ -178,24 +161,51 @@ public:
       RCLCPP_INFO(get_logger(), "KITCHEN STATE");    
    }
 
-   void corridor_code_once() {
-      RCLCPP_INFO(get_logger(), "CORRIDOR STATE");
-   }
-
-   void bedroom_code_once() {
-      RCLCPP_INFO(get_logger(), "BEDROOM STATE");
-   }
-
    void living_room_code_once() {
+      auto kitchen_explored = blackboard::Entry<bool>::make_shared(true);   
+      auto entry_base = kitchen_explored->to_base();   
+      blackboard->add_entry("kitchen", kitchen_explored->to_base());
+
       RCLCPP_INFO(get_logger(), "LIVING ROOM STATE");
    }
 
+   void corridor_code_once() {
+      auto living_room_explored = blackboard::Entry<bool>::make_shared(true);   
+      blackboard->add_entry("living_room", living_room_explored->to_base());
+
+      RCLCPP_INFO(get_logger(), "CORRIDOR STATE");
+   }
+
    void bathroom_code_once() {
+      auto corridor_explored = blackboard::Entry<bool>::make_shared(true);   
+      blackboard->add_entry("corridor", corridor_explored->to_base());
+
       RCLCPP_INFO(get_logger(), "BATHROOM STATE");
    }
 
+   void bedroom_code_once() {
+      auto bathroom_explored = blackboard::Entry<bool>::make_shared(true);   
+      blackboard->add_entry("bathroom", bathroom_explored->to_base());
+
+      RCLCPP_INFO(get_logger(), "BEDROOM STATE");
+   }
+
    void finish_code_once() {
+      auto bedroom_explored = blackboard::Entry<bool>::make_shared(true);   
+      blackboard->add_entry("bedroom", bedroom_explored->to_base());
+
       RCLCPP_INFO(get_logger(), "FINISH STATE");
+
+      auto entry_1_got = blackboard::as<bool>(blackboard->get_entry("kitchen"));
+      auto entry_2_got = blackboard::as<bool>(blackboard->get_entry("living_room"));
+      auto entry_3_got = blackboard::as<bool>(blackboard->get_entry("corridor"));
+      auto entry_4_got = blackboard::as<bool>(blackboard->get_entry("bathroom"));
+      auto entry_5_got = blackboard::as<bool>(blackboard->get_entry("bedroom"));
+      if(entry_1_got->data_){std::cout << "Kitchen was explored" << std::endl;}
+      if(entry_2_got->data_){std::cout << "Living_room was explored" << std::endl;}
+      if(entry_3_got->data_){std::cout << "Corridor was explored" << std::endl;} 
+      if(entry_4_got->data_){std::cout << "Bathroom was explored" << std::endl;}
+      if(entry_5_got->data_){std::cout << "Bedroom was explored" << std::endl;}
    }
 
 
@@ -235,10 +245,10 @@ public:
    void finsish_code_iterative() {
       show_planer_state();
    }
-    
+   
 
-  void init_knowledge()
-  {
+   void init_knowledge()
+   {
       problem_expert_->addInstance(plansys2::Instance{"kitchen", "room"});
       problem_expert_->addInstance(plansys2::Instance{"living_room", "room"});
       problem_expert_->addInstance(plansys2::Instance{"main_bedroom", "room"});
@@ -296,8 +306,6 @@ public:
       problem_expert_->addPredicate(plansys2::Predicate("(object_at rubber_duck bathtub_zone)"));
       problem_expert_->addPredicate(plansys2::Predicate("(object_at computer computer_zone)"));
 
-      
-
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored kitchen))"));
    }
 
@@ -307,9 +315,7 @@ public:
       StateType state_;
       std::shared_ptr<plansys2::ProblemExpertClient> problem_expert_;
       std::shared_ptr<plansys2::ExecutorClient> executor_client_;
-      //std::shared_ptr<blackboard::BlackBoard> blackboard;
-      
-
+      std::shared_ptr<blackboard::BlackBoard> blackboard = blackboard::BlackBoard::make_shared();
 };
 
 
@@ -329,7 +335,6 @@ int main(int argc, char ** argv)
    executor.spin_some();
    my_hfsm->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
 
-  
    executor.spin();
    rclcpp::shutdown();
    
