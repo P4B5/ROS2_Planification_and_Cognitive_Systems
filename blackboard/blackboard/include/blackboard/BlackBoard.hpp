@@ -19,8 +19,8 @@
 #include <memory>
 #include <string>
 
-//#include "blackboard/BlackBoardInterface.hpp"
-#include "BlackBoardInterface.hpp"
+#include "blackboard/BlackBoardInterface.hpp"
+
 namespace blackboard
 {
 
