@@ -22,6 +22,9 @@ Main projects:
 
 4. Apartment navigation: A complete robot pick&place task integrating plansys2 and nav2 inside an apartment: [Apartment navigation](https://github.com/P4B5/ROS2_Planification_and_Cognitive_Systems/tree/main/apartment_actions)
 
+5. Cognitive Apartment: Tiago explore different areas of an apartment. Implemented using a Blackboard and a hfsm to create a cognitive behavior: [Cognitive Apartment](https://github.com/P4B5/ROS2_Planification_and_Cognitive_Systems/tree/main/cognitive_apartment)
+
+
 
 Additional projects:
 
