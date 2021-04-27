@@ -43,7 +43,7 @@ if(entry_1_got->data_){std::cout << "Kitchen was explored" << std::endl;}
 
 ```
 
-
+![](https://github.com/P4B5/ROS2_Planification_and_Cognitive_Systems/blob/main/docs/bl.png)
 
 
 - topics to track info of the blackboard
