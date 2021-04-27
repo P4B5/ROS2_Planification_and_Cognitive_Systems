@@ -62,7 +62,7 @@ public:
    hsfm_imp_cognitive_apartment()
   : hfsm_cognitive_apartment()
   {
-
+     
   }
 
    bool get_plan_state(){
@@ -87,7 +87,6 @@ public:
       if(get_plan_state() == true){
          problem_expert_->removePredicate(plansys2::Predicate("(place_explored corridor)"));
          problem_expert_->setGoal(plansys2::Goal("(and(place_explored big_bathroom))"));
-
          if (executor_client_->start_plan_execution()) {
             return true;
          }
@@ -138,7 +137,7 @@ public:
    bool bedroom_2_finish(){
       if(get_plan_state() == true){
          problem_expert_->removePredicate(plansys2::Predicate("(place_explored computer_zone)"));
-         problem_expert_->setGoal(plansys2::Goal("(and(robot_at tiago living_room))"));
+         problem_expert_->setGoal(plansys2::Goal("(and(robot_at tiago computer_zone))"));
          if (executor_client_->start_plan_execution()) {
             return true;
          }
@@ -154,6 +153,8 @@ public:
       auto node = std::make_shared<rclcpp::Node>("node_aux");
       problem_expert_ = std::make_shared<plansys2::ProblemExpertClient>(node);
       executor_client_ = std::make_shared<plansys2::ExecutorClient>(node);
+      place_pub_ = node->create_publisher<std_msgs::msg::String>("/blackboard/info/places_explored", 100);
+      tf_pub_ = node->create_publisher<geometry_msgs::msg::TransformStamped>("/blackboard/info/tf_explored", 100);
       init_knowledge();
    }
 
@@ -166,12 +167,46 @@ public:
       auto entry_base = kitchen_explored->to_base();   
       blackboard->add_entry("kitchen", kitchen_explored->to_base());
 
+      geometry_msgs::msg::TransformStamped tf;
+      tf.header.frame_id = "/map";
+      tf.child_frame_id = "/odom";
+      tf.header.stamp = now();
+      tf.transform.translation.x = 1.15;
+      tf.transform.translation.y = -2.6;
+      tf.transform.translation.z = 0.0;
+      tf.transform.rotation.x = 0.0;
+      tf.transform.rotation.y = 0.0;
+      tf.transform.rotation.z = 1.0;
+      tf.transform.rotation.w = 0.0;
+
+      auto message = std_msgs::msg::String();
+      message.data = "kitchen";
+      place_pub_->publish(message);
+      tf_pub_->publish(tf);
+
       RCLCPP_INFO(get_logger(), "LIVING ROOM STATE");
    }
 
    void corridor_code_once() {
       auto living_room_explored = blackboard::Entry<bool>::make_shared(true);   
       blackboard->add_entry("living_room", living_room_explored->to_base());
+
+      geometry_msgs::msg::TransformStamped tf;
+      tf.header.frame_id = "/map";
+      tf.child_frame_id = "/odom";
+      tf.header.stamp = now();
+      tf.transform.translation.x = 2.06;
+      tf.transform.translation.y = 3.24;
+      tf.transform.translation.z = 0.0;
+      tf.transform.rotation.x = 0.0;
+      tf.transform.rotation.y = 0.0;
+      tf.transform.rotation.z = 1.0;
+      tf.transform.rotation.w = 0.0;
+
+      auto message = std_msgs::msg::String();
+      message.data = "living room";
+      place_pub_->publish(message);
+      tf_pub_->publish(tf);
 
       RCLCPP_INFO(get_logger(), "CORRIDOR STATE");
    }
@@ -180,6 +215,23 @@ public:
       auto corridor_explored = blackboard::Entry<bool>::make_shared(true);   
       blackboard->add_entry("corridor", corridor_explored->to_base());
 
+      geometry_msgs::msg::TransformStamped tf;
+      tf.header.frame_id = "/map";
+      tf.child_frame_id = "/odom";
+      tf.header.stamp = now();
+      tf.transform.translation.x = -2.0;
+      tf.transform.translation.y = -0.4;
+      tf.transform.translation.z = 0.0;
+      tf.transform.rotation.x = 0.0;
+      tf.transform.rotation.y = 0.0;
+      tf.transform.rotation.z = 1.0;
+      tf.transform.rotation.w = 0.0;
+
+      auto message = std_msgs::msg::String();
+      message.data = "corridor";
+      place_pub_->publish(message);
+      tf_pub_->publish(tf);
+
       RCLCPP_INFO(get_logger(), "BATHROOM STATE");
    }
 
@@ -187,12 +239,46 @@ public:
       auto bathroom_explored = blackboard::Entry<bool>::make_shared(true);   
       blackboard->add_entry("bathroom", bathroom_explored->to_base());
 
+      geometry_msgs::msg::TransformStamped tf;
+      tf.header.frame_id = "/map";
+      tf.child_frame_id = "/odom";
+      tf.header.stamp = now();
+      tf.transform.translation.x = -3.97;
+      tf.transform.translation.y = -0.74;
+      tf.transform.translation.z = 0.0;
+      tf.transform.rotation.x = 0.0;
+      tf.transform.rotation.y = 0.0;
+      tf.transform.rotation.z = 1.0;
+      tf.transform.rotation.w = 0.0;
+
+      auto message = std_msgs::msg::String();
+      message.data = "bathroom";
+      place_pub_->publish(message);
+      tf_pub_->publish(tf);
+
       RCLCPP_INFO(get_logger(), "BEDROOM STATE");
    }
 
    void finish_code_once() {
       auto bedroom_explored = blackboard::Entry<bool>::make_shared(true);   
       blackboard->add_entry("bedroom", bedroom_explored->to_base());
+
+      geometry_msgs::msg::TransformStamped tf;
+      tf.header.frame_id = "/map";
+      tf.child_frame_id = "/odom";
+      tf.header.stamp = now();
+      tf.transform.translation.x = -6.28;
+      tf.transform.translation.y = 1.35;
+      tf.transform.translation.z = 0.0;
+      tf.transform.rotation.x = 0.0;
+      tf.transform.rotation.y = 0.0;
+      tf.transform.rotation.z = 1.0;
+      tf.transform.rotation.w = 0.0;
+
+      auto message = std_msgs::msg::String();
+      message.data = "bedroom";
+      place_pub_->publish(message);
+      tf_pub_->publish(tf);
 
       RCLCPP_INFO(get_logger(), "FINISH STATE");
 
@@ -312,10 +398,12 @@ public:
 
    private:
       typedef enum {INIT, KITCHEN, BEDROOM, BATHROOM, LIVING_ROOM, FINISH, CORRIDOR} StateType;
-      StateType state_;
       std::shared_ptr<plansys2::ProblemExpertClient> problem_expert_;
       std::shared_ptr<plansys2::ExecutorClient> executor_client_;
       std::shared_ptr<blackboard::BlackBoard> blackboard = blackboard::BlackBoard::make_shared();
+      rclcpp::Publisher<std_msgs::msg::String>::SharedPtr place_pub_;
+      rclcpp::Publisher<geometry_msgs::msg::TransformStamped>::SharedPtr tf_pub_;
+     
 };
 
 
