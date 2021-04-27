@@ -21,6 +21,7 @@ set(dependencies
   rclcpp_action
   plansys2_msgs
   plansys2_executor
+  geometry_msgs
   nav2_msgs
   plansys2_problem_expert
   plansys2_domain_expert

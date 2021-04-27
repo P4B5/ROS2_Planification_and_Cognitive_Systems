@@ -74,7 +74,7 @@ public:
     wp.pose.position.y = -3.80;
     waypoints_["downstairs"] = wp;
 
-    wp.pose.position.x = -2.1;
+    wp.pose.position.x = -2.0;
     wp.pose.position.y = -0.4;
     waypoints_["corridor"] = wp;
 
