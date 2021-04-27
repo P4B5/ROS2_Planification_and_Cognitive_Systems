@@ -21,7 +21,7 @@ The state machine consist of:
 
 execute hfsm gui: `ros2 run rqt_gui rqt_gui`
 
-![bica](./docs/bica.png)
+![](https://github.com/P4B5/ROS2_Planification_and_Cognitive_Systems/blob/main/docs/bica.png)
 
 
 ## BlackBoard
