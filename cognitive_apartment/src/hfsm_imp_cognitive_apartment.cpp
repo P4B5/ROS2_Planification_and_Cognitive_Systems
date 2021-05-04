@@ -67,8 +67,9 @@ public:
 
    bool get_plan_state(){
      auto feedback = executor_client_->getFeedBack();
-      if (executor_client_->execute_and_check_plan() && executor_client_->getResult()) {
+      if (!executor_client_->execute_and_check_plan() && executor_client_->getResult()) {
          if (executor_client_->getResult().value().success) {
+            std::cout << "=======================\n";
                return true;
          } else {
             for (const auto & action_feedback : feedback.action_execution_status) {
@@ -84,47 +85,19 @@ public:
    }
 
    bool corridor_2_bathroom() {
-      if(get_plan_state() == true){
-         problem_expert_->removePredicate(plansys2::Predicate("(place_explored corridor)"));
-         problem_expert_->setGoal(plansys2::Goal("(and(place_explored big_bathroom))"));
-         if (executor_client_->start_plan_execution()) {
-            return true;
-         }
-      }
-      return false;
+      return get_plan_state();
    }
 
    bool bathroom_2_bedroom() {
-      if(get_plan_state() == true){
-         problem_expert_->removePredicate(plansys2::Predicate("(place_explored big_bathroom)"));
-         problem_expert_->setGoal(plansys2::Goal("(and(place_explored computer_zone))"));
-         if (executor_client_->start_plan_execution()) {
-            return true;
-         }
-      }
-      return false;
+      return get_plan_state();
    }
 
    bool kitchen_2_living_room() {
-      if(get_plan_state() == true){
-         problem_expert_->removePredicate(plansys2::Predicate("(place_explored kitchen)"));
-         problem_expert_->setGoal(plansys2::Goal("(and(place_explored dining_zone))"));
-         if (executor_client_->start_plan_execution()) {
-            return true;
-         }
-      }
-      return false;
+      return get_plan_state();
    }
 
    bool living_room_2_corridor() {
-      if(get_plan_state() == true){
-         problem_expert_->removePredicate(plansys2::Predicate("(place_explored dining_zone)"));
-         problem_expert_->setGoal(plansys2::Goal("(and(place_explored corridor))"));
-         if (executor_client_->start_plan_execution()) {
-            return true;
-         }
-      }
-      return false;
+      return get_plan_state();
    }
 
    bool init_2_kitchen(){
@@ -135,14 +108,7 @@ public:
    }
 
    bool bedroom_2_finish(){
-      if(get_plan_state() == true){
-         problem_expert_->removePredicate(plansys2::Predicate("(place_explored computer_zone)"));
-         problem_expert_->setGoal(plansys2::Goal("(and(robot_at tiago computer_zone))"));
-         if (executor_client_->start_plan_execution()) {
-            return true;
-         }
-      }
-      return false;
+      return get_plan_state();
    }
 
    //----- ONCE -----
@@ -163,14 +129,18 @@ public:
    }
 
    void living_room_code_once() {
+
+      //set new goal
+      problem_expert_->removePredicate(plansys2::Predicate("(place_explored kitchen)"));
+      problem_expert_->setGoal(plansys2::Goal("(and(place_explored dining_zone))"));
+ 
       auto kitchen_explored = blackboard::Entry<bool>::make_shared(true);   
       auto entry_base = kitchen_explored->to_base();   
       blackboard->add_entry("kitchen", kitchen_explored->to_base());
 
       geometry_msgs::msg::TransformStamped tf;
       tf.header.frame_id = "/map";
-      tf.child_frame_id = "/odom";
-      tf.header.stamp = now();
+      tf.header.stamp=now();
       tf.transform.translation.x = 1.15;
       tf.transform.translation.y = -2.6;
       tf.transform.translation.z = 0.0;
@@ -179,106 +149,80 @@ public:
       tf.transform.rotation.z = 1.0;
       tf.transform.rotation.w = 0.0;
 
+
       auto message = std_msgs::msg::String();
       message.data = "kitchen";
       place_pub_->publish(message);
       tf_pub_->publish(tf);
 
       RCLCPP_INFO(get_logger(), "LIVING ROOM STATE");
+
+      executor_client_->start_plan_execution();
+
+      
    }
 
    void corridor_code_once() {
+
+      problem_expert_->removePredicate(plansys2::Predicate("(place_explored dining_zone)"));
+      problem_expert_->setGoal(plansys2::Goal("(and(place_explored corridor))"));
+        
       auto living_room_explored = blackboard::Entry<bool>::make_shared(true);   
       blackboard->add_entry("living_room", living_room_explored->to_base());
-
-      geometry_msgs::msg::TransformStamped tf;
-      tf.header.frame_id = "/map";
-      tf.child_frame_id = "/odom";
-      tf.header.stamp = now();
-      tf.transform.translation.x = 2.06;
-      tf.transform.translation.y = 3.24;
-      tf.transform.translation.z = 0.0;
-      tf.transform.rotation.x = 0.0;
-      tf.transform.rotation.y = 0.0;
-      tf.transform.rotation.z = 1.0;
-      tf.transform.rotation.w = 0.0;
 
       auto message = std_msgs::msg::String();
       message.data = "living room";
       place_pub_->publish(message);
-      tf_pub_->publish(tf);
 
       RCLCPP_INFO(get_logger(), "CORRIDOR STATE");
+
+      executor_client_->start_plan_execution();
    }
 
    void bathroom_code_once() {
+      problem_expert_->removePredicate(plansys2::Predicate("(place_explored corridor)"));
+      problem_expert_->setGoal(plansys2::Goal("(and(place_explored big_bathroom))"));
+
       auto corridor_explored = blackboard::Entry<bool>::make_shared(true);   
       blackboard->add_entry("corridor", corridor_explored->to_base());
-
-      geometry_msgs::msg::TransformStamped tf;
-      tf.header.frame_id = "/map";
-      tf.child_frame_id = "/odom";
-      tf.header.stamp = now();
-      tf.transform.translation.x = -2.0;
-      tf.transform.translation.y = -0.4;
-      tf.transform.translation.z = 0.0;
-      tf.transform.rotation.x = 0.0;
-      tf.transform.rotation.y = 0.0;
-      tf.transform.rotation.z = 1.0;
-      tf.transform.rotation.w = 0.0;
 
       auto message = std_msgs::msg::String();
       message.data = "corridor";
       place_pub_->publish(message);
-      tf_pub_->publish(tf);
 
       RCLCPP_INFO(get_logger(), "BATHROOM STATE");
+
+      executor_client_->start_plan_execution();
    }
 
    void bedroom_code_once() {
+      problem_expert_->removePredicate(plansys2::Predicate("(place_explored big_bathroom)"));
+      problem_expert_->setGoal(plansys2::Goal("(and(place_explored computer_zone))"));
+
       auto bathroom_explored = blackboard::Entry<bool>::make_shared(true);   
       blackboard->add_entry("bathroom", bathroom_explored->to_base());
-
-      geometry_msgs::msg::TransformStamped tf;
-      tf.header.frame_id = "/map";
-      tf.child_frame_id = "/odom";
-      tf.header.stamp = now();
-      tf.transform.translation.x = -3.97;
-      tf.transform.translation.y = -0.74;
-      tf.transform.translation.z = 0.0;
-      tf.transform.rotation.x = 0.0;
-      tf.transform.rotation.y = 0.0;
-      tf.transform.rotation.z = 1.0;
-      tf.transform.rotation.w = 0.0;
 
       auto message = std_msgs::msg::String();
       message.data = "bathroom";
       place_pub_->publish(message);
-      tf_pub_->publish(tf);
 
+   
       RCLCPP_INFO(get_logger(), "BEDROOM STATE");
+
+      executor_client_->start_plan_execution();
    }
 
    void finish_code_once() {
+
+      problem_expert_->removePredicate(plansys2::Predicate("(place_explored computer_zone)"));
+      problem_expert_->setGoal(plansys2::Goal("(and(robot_at tiago living_room))"));
+
       auto bedroom_explored = blackboard::Entry<bool>::make_shared(true);   
       blackboard->add_entry("bedroom", bedroom_explored->to_base());
-
-      geometry_msgs::msg::TransformStamped tf;
-      tf.header.frame_id = "/map";
-      tf.child_frame_id = "/odom";
-      tf.header.stamp = now();
-      tf.transform.translation.x = -6.28;
-      tf.transform.translation.y = 1.35;
-      tf.transform.translation.z = 0.0;
-      tf.transform.rotation.x = 0.0;
-      tf.transform.rotation.y = 0.0;
-      tf.transform.rotation.z = 1.0;
-      tf.transform.rotation.w = 0.0;
 
       auto message = std_msgs::msg::String();
       message.data = "bedroom";
       place_pub_->publish(message);
-      tf_pub_->publish(tf);
 
       RCLCPP_INFO(get_logger(), "FINISH STATE");
 
@@ -292,6 +236,9 @@ public:
       if(entry_3_got->data_){std::cout << "Corridor was explored" << std::endl;} 
       if(entry_4_got->data_){std::cout << "Bathroom was explored" << std::endl;}
       if(entry_5_got->data_){std::cout << "Bedroom was explored" << std::endl;}
+
+      executor_client_->start_plan_execution();
+
    }
 
 
