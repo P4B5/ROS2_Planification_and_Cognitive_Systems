@@ -75,6 +75,7 @@ private:
   std::string myBaseId_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>::SharedPtr state_pub_;
   rclcpp::TimerBase::SharedPtr loop_timer_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr place_pub_;
 };
 
 }  // namespace cascade_hfsm

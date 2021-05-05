@@ -53,54 +53,69 @@ public:
     wp.pose.position.x = 1.15;
     wp.pose.position.y = -2.6;
     waypoints_["kitchen"] = wp;
+    // waypoints_["kitchen"] = blackboard::as<Pose>(blackboard->get_entry("kitchen"));
 
     wp.pose.position.x = -1.87;
     wp.pose.position.y = 2.62;
     waypoints_["small_bathroom"] = wp;
+    // waypoints_["kitchen"] = blackboard::as<Pose>(blackboard->get_entry("small_bathroom"));
 
     wp.pose.position.x = -4.1;
     wp.pose.position.y = 1.7;
     waypoints_["computer_bedroom"] = wp;
+    // waypoints_["kitchen"] = blackboard::as<Pose>(blackboard->get_entry("computer_bedroom));
 
     wp.pose.position.x = -3.97;
     wp.pose.position.y = -0.74;
     waypoints_["big_bathroom"] = wp;
+    // waypoints_["kitchen"] = blackboard::as<Pose>(blackboard->get_entry("big_bathroom"));
 
     wp.pose.position.x = -4.27;
     wp.pose.position.y = -3.88;
     waypoints_["main_bedroom"] = wp;
+    // waypoints_["kitchen"] = blackboard::as<Pose>(blackboard->get_entry("main_bedroom"));
 
     wp.pose.position.x = -0.39;
     wp.pose.position.y = -3.80;
     waypoints_["downstairs"] = wp;
+    // waypoints_["downstairs"] = blackboard::as<Pose>(blackboard->get_entry("downstairs"));
 
-    wp.pose.position.x = -2.0;
+    wp.pose.position.x = -2.1;
     wp.pose.position.y = -0.4;
     waypoints_["corridor"] = wp;
+    // waypoints_["corridor"] = blackboard::as<Pose>(blackboard->get_entry("corridor"));
 
     wp.pose.position.x = 3.85;
     wp.pose.position.y = -3.64;
     waypoints_["fridge_zone"] = wp;
+    // waypoints_["fridge_zone"] = blackboard::as<Pose>(blackboard->get_entry("fridge_zone"));
 
     wp.pose.position.x = 3.53;
     wp.pose.position.y = -3.23;
     waypoints_["dishwasher_zone"] = wp;
+    // waypoints_["fridge_zone"] = blackboard::as<Pose>(blackboard->get_entry("fridge_zone"));
 
     wp.pose.position.x = 2.97;
     wp.pose.position.y = -0.56;
     waypoints_["tv_zone"] = wp;
+    // waypoints_["tv_zone"] = blackboard::as<Pose>(blackboard->get_entry("tv_zone"));
 
     wp.pose.position.x = 2.06;
     wp.pose.position.y = 3.24;
     waypoints_["dining_zone"] = wp;
+    // waypoints_["dining_zone"] = blackboard::as<Pose>(blackboard->get_entry("dining_zone"));
 
     wp.pose.position.x = -6.28;
     wp.pose.position.y = 1.35;
     waypoints_["computer_zone"] = wp;
+    // waypoints_["computer_zone"] = blackboard::as<Pose>(blackboard->get_entry("computer_zone"));
 
     wp.pose.position.x = -5.12;
     wp.pose.position.y = -0.62;
     waypoints_["bathtub_zone"] = wp;    
+    // waypoints_["bathtub_zone"] = blackboard::as<Pose>(blackboard->get_entry("bathtub_zone"));
+
+
 
     using namespace std::placeholders;
     pos_sub_ = create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(

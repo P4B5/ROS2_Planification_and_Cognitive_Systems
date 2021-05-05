@@ -50,6 +50,7 @@ def generate_launch_description():
     PythonLaunchDescriptionSource(os.path.join(
         get_package_share_directory('robots'),
         'launch',
+        # 'tiago_camera.launch.py')),
         'tiago_nodoors.launch.py')),
     launch_arguments={
         'autostart': 'true'
@@ -62,7 +63,7 @@ def generate_launch_description():
         name='move_action_node',
         namespace=namespace,
         output='screen',
-        parameters=[])
+        parameters=[example_dir + '/config/params.yaml'])
     
     explore = Node(
         package='cognitive_apartment',
@@ -70,7 +71,7 @@ def generate_launch_description():
         name='explore_action_node',
         namespace=namespace,
         output='screen',
-        parameters=[])
+        parameters=[example_dir + '/config/params.yaml'])
     
     grab_object = Node(
         package='cognitive_apartment',
@@ -78,7 +79,7 @@ def generate_launch_description():
         name='grab_object_action_node',
         namespace=namespace,
         output='screen',
-        parameters=[])
+        parameters=[example_dir + '/config/params.yaml'])
     
     release_object = Node(
         package='cognitive_apartment',
@@ -86,7 +87,7 @@ def generate_launch_description():
         name='release_object_action_node',
         namespace=namespace,
         output='screen',
-        parameters=[])
+        parameters=[example_dir + '/config/params.yaml'])
     # Create the launch description and populate
     ld = LaunchDescription()
 
