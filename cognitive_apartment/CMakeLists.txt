@@ -14,6 +14,16 @@ find_package(rclcpp_cascade_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(blackboard REQUIRED)
 
+find_package(image_transport REQUIRED)
+find_package(OpenCV 4.2.0 REQUIRED)
+
+find_package(cv_bridge REQUIRED)
+#find_package(pcl_conversions REQUIRED)
+find_package(PCL REQUIRED QUIET COMPONENTS common io)
+find_package(pcl_msgs REQUIRED)
+
+find_package(Boost REQUIRED COMPONENTS system)
+
 set(CMAKE_CXX_STANDARD 17)
 
 set(dependencies
@@ -28,9 +38,25 @@ set(dependencies
   rclcpp_cascade_lifecycle
   lifecycle_msgs
   blackboard
+
+  image_transport
+  cv_bridge
+  sensor_msgs
+  pcl_msgs
+  #pcl_conversions
+
 )
 
 include_directories(fsm)
+include_directories(${OpenCV_INCLUDE_DIRS})
+#include_directories(${PCL_INCLUDE_DIRS})
+include_directories(${PCL_COMMON_INCLUDE_DIRS})
+
+#add_definitions(${PCL_DEFINITIONS})
+
+link_directories(
+	${PCL_LIBRARY_DIRS}
+)
 
 add_executable(move_action_node src/move_action_node.cpp)
 ament_target_dependencies(move_action_node ${dependencies})
@@ -44,12 +70,18 @@ ament_target_dependencies(release_object_action_node ${dependencies})
 add_executable(explore_action_node src/explore_action_node.cpp)
 ament_target_dependencies(explore_action_node ${dependencies})
 
+add_executable(filtro src/filtro.cpp)
+ament_target_dependencies(filtro ${dependencies})
+
 add_executable(hfsm_cognitive_apartment 
   src/hfsm_imp_cognitive_apartment.cpp
   fsm/hfsm_cognitive_apartment.cpp
 )
 ament_target_dependencies(hfsm_cognitive_apartment ${dependencies})
 
+target_link_libraries(filtro
+  ${Boost_SYSTEM_LIBRARY}  # pcl_conversions requires this
+)
 
 install(DIRECTORY launch pddl DESTINATION share/${PROJECT_NAME})
 
@@ -59,10 +91,12 @@ install(TARGETS
   grab_object_action_node
   release_object_action_node
   hfsm_cognitive_apartment
+  filtro
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
