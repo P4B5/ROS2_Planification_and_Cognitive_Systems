@@ -76,7 +76,7 @@ add_executable(explore_action_node src/explore_action_node.cpp)
 ament_target_dependencies(explore_action_node ${dependencies})
 
 add_executable(filtro src/filtro.cpp)
-ament_target_dependencies(filtro ${dependencies})
+ament_target_dependencies(filtro ${dependencies} )
 
 add_executable(hfsm_cognitive_apartment 
   src/hfsm_imp_cognitive_apartment.cpp
