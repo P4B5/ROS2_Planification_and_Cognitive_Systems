@@ -28,6 +28,12 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 
+#include "blackboard/BlackBoard.hpp"
+#include "blackboard/BlackBoardNode.hpp"
+#include "blackboard/BlackBoardClient.hpp"
+
+#include "sync_node.hpp"
+
 using namespace std::chrono_literals;
 
 class MoveAction : public plansys2::ActionExecutorClient
@@ -38,84 +44,20 @@ public:
   {
     progress_ = 0.0;
 
-    geometry_msgs::msg::PoseStamped wp;
-    wp.header.frame_id = "/map";
-    wp.header.stamp = now();
-    wp.pose.position.x = 0.0;
-    wp.pose.position.y = 0.0;
-    wp.pose.position.z = 0.0;
-    wp.pose.orientation.x = 0.0;
-    wp.pose.orientation.y = 0.0;
-    wp.pose.orientation.z = 1.0;
-    wp.pose.orientation.w = 0.0;
-    waypoints_["living_room"] = wp;
-
-    wp.pose.position.x = 1.15;
-    wp.pose.position.y = -2.6;
-    waypoints_["kitchen"] = wp;
-    // waypoints_["kitchen"] = blackboard::as<Pose>(blackboard->get_entry("kitchen"));
-
-    wp.pose.position.x = -1.87;
-    wp.pose.position.y = 2.62;
-    waypoints_["small_bathroom"] = wp;
-    // waypoints_["kitchen"] = blackboard::as<Pose>(blackboard->get_entry("small_bathroom"));
-
-    wp.pose.position.x = -4.1;
-    wp.pose.position.y = 1.7;
-    waypoints_["computer_bedroom"] = wp;
-    // waypoints_["kitchen"] = blackboard::as<Pose>(blackboard->get_entry("computer_bedroom));
-
-    wp.pose.position.x = -3.97;
-    wp.pose.position.y = -0.74;
-    waypoints_["big_bathroom"] = wp;
-    // waypoints_["kitchen"] = blackboard::as<Pose>(blackboard->get_entry("big_bathroom"));
-
-    wp.pose.position.x = -4.27;
-    wp.pose.position.y = -3.88;
-    waypoints_["main_bedroom"] = wp;
-    // waypoints_["kitchen"] = blackboard::as<Pose>(blackboard->get_entry("main_bedroom"));
-
-    wp.pose.position.x = -0.39;
-    wp.pose.position.y = -3.80;
-    waypoints_["downstairs"] = wp;
-    // waypoints_["downstairs"] = blackboard::as<Pose>(blackboard->get_entry("downstairs"));
-
-    wp.pose.position.x = -2.1;
-    wp.pose.position.y = -0.4;
-    waypoints_["corridor"] = wp;
-    // waypoints_["corridor"] = blackboard::as<Pose>(blackboard->get_entry("corridor"));
-
-    wp.pose.position.x = 3.85;
-    wp.pose.position.y = -3.64;
-    waypoints_["fridge_zone"] = wp;
-    // waypoints_["fridge_zone"] = blackboard::as<Pose>(blackboard->get_entry("fridge_zone"));
-
-    wp.pose.position.x = 3.53;
-    wp.pose.position.y = -3.23;
-    waypoints_["dishwasher_zone"] = wp;
-    // waypoints_["fridge_zone"] = blackboard::as<Pose>(blackboard->get_entry("fridge_zone"));
-
-    wp.pose.position.x = 2.97;
-    wp.pose.position.y = -0.56;
-    waypoints_["tv_zone"] = wp;
-    // waypoints_["tv_zone"] = blackboard::as<Pose>(blackboard->get_entry("tv_zone"));
-
-    wp.pose.position.x = 2.06;
-    wp.pose.position.y = 3.24;
-    waypoints_["dining_zone"] = wp;
-    // waypoints_["dining_zone"] = blackboard::as<Pose>(blackboard->get_entry("dining_zone"));
-
-    wp.pose.position.x = -6.28;
-    wp.pose.position.y = 1.35;
-    waypoints_["computer_zone"] = wp;
-    // waypoints_["computer_zone"] = blackboard::as<Pose>(blackboard->get_entry("computer_zone"));
-
-    wp.pose.position.x = -5.12;
-    wp.pose.position.y = -0.62;
-    waypoints_["bathtub_zone"] = wp;    
-    // waypoints_["bathtub_zone"] = blackboard::as<Pose>(blackboard->get_entry("bathtub_zone"));
-
-
+    waypoints_["living_room"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("living_room"))->data_;
+    waypoints_["kitchen"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("kitchen"))->data_;
+    waypoints_["small_bathroom"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("small_bathroom"))->data_;
+    waypoints_["computer_bedroom"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("computer_bedroom"))->data_;
+    waypoints_["big_bathroom"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("big_bathroom"))->data_;
+    waypoints_["main_bedroom"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("main_bedroom"))->data_;
+    waypoints_["downstairs"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("downstairs"))->data_;
+    waypoints_["corridor"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("corridor"))->data_;
+    waypoints_["fridge_zone"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("fridge_zone"))->data_;
+    waypoints_["dishwasher_zone"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("dishwasher_zone"))->data_;
+    waypoints_["tv_zone"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("tv_zone"))->data_;
+    waypoints_["dining_zone"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("dining_zone"))->data_;
+    waypoints_["computer_zone"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("computer_zone"))->data_;
+    waypoints_["bathtub_zone"] = blackboard::as<geometry_msgs::msg::PoseStamped>(client_move->get_entry("bathtub_zone"))->data_;
 
     using namespace std::placeholders;
     pos_sub_ = create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
@@ -222,6 +164,8 @@ private:
   nav2_msgs::action::NavigateToPose::Goal navigation_goal_;
 
   double dist_to_move;
+
+  std::shared_ptr<blackboard::BlackBoardClient> client_move = blackboard::BlackBoardClient::make_shared();
 };
 
 int main(int argc, char ** argv)

@@ -13,6 +13,8 @@ find_package(plansys2_domain_expert REQUIRED)
 find_package(rclcpp_cascade_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(blackboard REQUIRED)
+find_package(blackboard_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -29,9 +31,14 @@ set(dependencies
   rclcpp_cascade_lifecycle
   lifecycle_msgs
   blackboard
+  blackboard_msgs
+  tf2_ros
 )
 
 include_directories(fsm)
+
+add_executable(sync_node src/sync_node.cpp)
+ament_target_dependencies(sync_node ${dependencies})
 
 add_executable(move_action_node src/move_action_node.cpp)
 ament_target_dependencies(move_action_node ${dependencies})
@@ -52,7 +59,7 @@ add_executable(hfsm_cognitive_apartment
 ament_target_dependencies(hfsm_cognitive_apartment ${dependencies})
 
 
-install(DIRECTORY launch pddl DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch pddl config DESTINATION share/${PROJECT_NAME})
 
 install(TARGETS
   explore_action_node
@@ -60,6 +67,7 @@ install(TARGETS
   grab_object_action_node
   release_object_action_node
   hfsm_cognitive_apartment
+  sync_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}

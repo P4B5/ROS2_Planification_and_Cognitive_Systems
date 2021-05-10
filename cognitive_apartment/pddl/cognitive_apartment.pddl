@@ -24,7 +24,6 @@
     :condition (and 
         (at start (robot_at ?rob ?from))
         (at start (robot_idle ?rob))
-        (over all (places_together ?from ?to))
     )
     :effect (and 
         (at start (not (robot_at ?rob ?from)))

@@ -20,6 +20,7 @@
   <depend>plansys2_domain_expert</depend>
   <depend>lifecycle_msgs</depend>
   <depend>blackboard</depend>
+  <depend>tf2_ros</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

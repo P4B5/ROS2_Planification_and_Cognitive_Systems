@@ -1,34 +1,23 @@
-move_1:
-  ros__parameters:
-    plugins:
-      - plansys2_move_node
-    waypoints: ["kitchen", "living_room", "small_bathroom", "computer_bedroom", "big_bathroom","main_bedroom","downstairs","corridor","fridge_zone","dishwasher_zone","tv_zone","dining_zone","computer_zone", "bathub_zone"]
-    waypoint_coords:
-      kitchen: [1.15, -2.6, 0.0]
-      living_room: [0.0, 0.0, 0.0]
-      small_bathroom: [-1.87, 2.62, 0.0]
-      computer_bedroom: [-4.1, 1.7, 0.0]
-      big_bathroom: [-3.97, -0.74, 0.0]
-      main_bedroom: [-4.27, -3.88, 0.0]
-      downstairs: [-0.39, -3.80, 0.0]
-      fridge_zone: [-2.1, -0.4, 0.0]
-      dishwasher_zone: [3.53, -3.23, 0.0]
-      tv_zone: [2.97, -0.56, 0.0]
-      dining_zone: [2.06, 3.24, 0.0]
-      computer_zone: [-6.28, 1.38, 0.0]
-      bathtub_zone: [-5.12, -0.62, 0.0]
+# move_action_node:
+sync_node:
+    ros__parameters:
+        param_int: 5
+        param_string: "Different text from the YAML file"
+        waypoints: ["kitchen", "living_room", "small_bathroom", "computer_bedroom", "big_bathroom","main_bedroom","downstairs","corridor","fridge_zone","dishwasher_zone","tv_zone","dining_zone","computer_zone","bathtub_zone"]
+        waypoint_coords:
+            kitchen: [1.15, -2.6, 0.0]
+            living_room: [0.0, 0.0, 0.0]
+            small_bathroom: [-1.87, 2.62, 0.0]
+            computer_bedroom: [-4.1, 1.7, 0.0]
+            big_bathroom: [-3.97, -0.74, 0.0]
+            main_bedroom: [-4.27, -3.88, 0.0]
+            downstairs: [-0.39, -3.80, 0.0]
+            corridor: [-2.1, -0.4, 0.0]
+            fridge_zone: [-2.1, -0.4, 0.0]
+            dishwasher_zone: [3.53, -3.23, 0.0]
+            tv_zone: [2.97, -0.56, 0.0]
+            dining_zone: [2.06, 3.24, 0.0]
+            computer_zone: [-6.28, 1.38, 0.0]
+            bathtub_zone: [-5.12, -0.62, 0.0]
 
-explore_1:
-  ros__parameters:
-    plugins:
-      - plansys2_explore_node
 
-grab_object_1:
-  ros__parameters:
-    plugins:
-      - plansys2_grab_object_node
-
-release_object_1:
-  ros__parameters:
-    plugins:
-      - plansys2_release_object_node
