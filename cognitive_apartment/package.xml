@@ -19,6 +19,8 @@
   <depend>plansys2_problem_expert</depend>
   <depend>plansys2_domain_expert</depend>
   <depend>lifecycle_msgs</depend>
+  <depend>blackboard</depend>
+  <depend>tf2_ros</depend>
 
   <depend>image_transport</depend>
   <depend>cv_bridge</depend>

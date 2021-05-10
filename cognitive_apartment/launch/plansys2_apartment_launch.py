@@ -50,44 +50,60 @@ def generate_launch_description():
     PythonLaunchDescriptionSource(os.path.join(
         get_package_share_directory('robots'),
         'launch',
-        # 'tiago_camera.launch.py')),
         'tiago_nodoors.launch.py')),
     launch_arguments={
         'autostart': 'true'
     }.items())
 
     # Specify the actions
+    blackboard = Node(
+        package='blackboard',
+        executable='blackboard_main',
+        name='blackboard_main',
+        namespace=namespace,
+        output='screen')
+        #parameters=[example_dir + '/config/params.yaml'])
+        
+    sync = Node(
+        package='cognitive_apartment',
+        executable='sync_node',
+        name='sync_node',
+        namespace=namespace,
+        output='screen',
+        parameters=[example_dir + '/config/params.yaml'])
+        
     move = Node(
         package='cognitive_apartment',
         executable='move_action_node',
         name='move_action_node',
         namespace=namespace,
-        output='screen',
-        parameters=[example_dir + '/config/params.yaml'])
+        output='screen')
+        #parameters=[example_dir + '/config/params.yaml'])
     
     explore = Node(
         package='cognitive_apartment',
         executable='explore_action_node',
         name='explore_action_node',
         namespace=namespace,
-        output='screen',
-        parameters=[example_dir + '/config/params.yaml'])
+        output='screen')
+        #parameters=[example_dir + '/config/params.yaml'])
     
     grab_object = Node(
         package='cognitive_apartment',
         executable='grab_object_action_node',
         name='grab_object_action_node',
         namespace=namespace,
-        output='screen',
-        parameters=[example_dir + '/config/params.yaml'])
+        output='screen')
+        #parameters=[example_dir + '/config/params.yaml'])
     
     release_object = Node(
         package='cognitive_apartment',
         executable='release_object_action_node',
         name='release_object_action_node',
         namespace=namespace,
-        output='screen',
-        parameters=[example_dir + '/config/params.yaml'])
+        output='screen')
+        #parameters=[example_dir + '/config/params.yaml'])
+
     # Create the launch description and populate
     ld = LaunchDescription()
 
@@ -99,6 +115,8 @@ def generate_launch_description():
     ld.add_action(plansys2_cmd)
     ld.add_action(nav2_cmd)
 
+    ld.add_action(blackboard)
+    ld.add_action(sync)
     ld.add_action(move)
     ld.add_action(explore)
     ld.add_action(grab_object)

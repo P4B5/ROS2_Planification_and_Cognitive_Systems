@@ -3,7 +3,7 @@ sync_node:
     ros__parameters:
         param_int: 5
         param_string: "Different text from the YAML file"
-        waypoints: ["kitchen", "living_room", "small_bathroom", "computer_bedroom", "big_bathroom","main_bedroom","downstairs","corridor","fridge_zone","dishwasher_zone","tv_zone","dining_zone","computer_zone", "bathtub_zone"]
+        waypoints: ["kitchen", "living_room", "small_bathroom", "computer_bedroom", "big_bathroom","main_bedroom","downstairs","corridor","fridge_zone","dishwasher_zone","tv_zone","dining_zone","computer_zone","bathtub_zone"]
         waypoint_coords:
             kitchen: [1.15, -2.6, 0.0]
             living_room: [0.0, 0.0, 0.0]

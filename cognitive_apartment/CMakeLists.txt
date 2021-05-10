@@ -13,6 +13,8 @@ find_package(plansys2_domain_expert REQUIRED)
 find_package(rclcpp_cascade_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(blackboard REQUIRED)
+find_package(blackboard_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 find_package(image_transport REQUIRED)
 find_package(OpenCV 4.2.0 REQUIRED)
@@ -39,13 +41,12 @@ set(dependencies
   rclcpp_cascade_lifecycle
   lifecycle_msgs
   blackboard
-
+  blackboard_msgs
+  tf2_ros
   image_transport
   cv_bridge
   sensor_msgs
   pcl_msgs
-  #pcl_conversions
-
 )
 
 include_directories(fsm)
@@ -58,6 +59,9 @@ include_directories(${PCL_COMMON_INCLUDE_DIRS})
 link_directories(
 	${PCL_LIBRARY_DIRS}
 )
+
+add_executable(sync_node src/sync_node.cpp)
+ament_target_dependencies(sync_node ${dependencies})
 
 add_executable(move_action_node src/move_action_node.cpp)
 ament_target_dependencies(move_action_node ${dependencies})
@@ -84,7 +88,7 @@ target_link_libraries(filtro
   ${Boost_SYSTEM_LIBRARY}  # pcl_conversions requires this
 )
 
-install(DIRECTORY launch pddl DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch pddl config DESTINATION share/${PROJECT_NAME})
 
 install(TARGETS
   explore_action_node
@@ -92,6 +96,7 @@ install(TARGETS
   grab_object_action_node
   release_object_action_node
   hfsm_cognitive_apartment
+  sync_node
   filtro
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
