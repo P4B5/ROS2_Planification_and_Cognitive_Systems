@@ -80,6 +80,12 @@ BlackBoardClient::add_entry(const std::string & key, EntryBase::Ptr entry)
     request->entry.octomap_entry = blackboard::as<octomap_msgs::msg::Octomap>(entry)->data_;
   }
 
+  if (entry->get_type() == EntryBase::POSE) {
+    request->entry.type = blackboard_msgs::msg::Entry::POSE_TYPE;
+    request->entry.key = key;
+    request->entry.pose_entry = blackboard::as<geometry_msgs::msg::PoseStamped>(entry)->data_;
+  }
+
   auto future_result = add_entry_client_->async_send_request(request);
 
   if (rclcpp::spin_until_future_complete(client_node_, future_result, std::chrono::seconds(1)) !=
@@ -147,6 +153,12 @@ BlackBoardClient::get_entry(const std::string & key)
       case blackboard_msgs::msg::Entry::OCTOMAP_TYPE:
         {
           ret = blackboard::Entry<octomap_msgs::msg::Octomap>::make_shared(future_result.get()->entry.octomap_entry);
+          return ret;
+        }
+        break;
+      case blackboard_msgs::msg::Entry::POSE_TYPE:
+        {
+          ret = blackboard::Entry<geometry_msgs::msg::PoseStamped>::make_shared(future_result.get()->entry.pose_entry);
           return ret;
         }
         break;
