@@ -1,4 +1,0 @@
-string key
----
-blackboard_msgs/Entry entry
-bool success
