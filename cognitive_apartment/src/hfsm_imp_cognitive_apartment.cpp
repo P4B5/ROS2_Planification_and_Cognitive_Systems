@@ -21,15 +21,11 @@
 #include "plansys2_executor/ExecutorClient.hpp"
 #include "plansys2_problem_expert/ProblemExpertClient.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
-#include <tf2_ros/static_transform_broadcaster.h>
+// #include "sync_node.hpp"
 
 #include "hfsm_cognitive_apartment.hpp"
 
 #include "blackboard/BlackBoard.hpp"
-#include "blackboard/BlackBoardNode.hpp"
-#include "blackboard/BlackBoardClient.hpp"
-
-#include "sync_node.hpp"
 
 
 using std::placeholders::_1;
@@ -74,7 +70,8 @@ public:
      auto feedback = executor_client_->getFeedBack();
       if (!executor_client_->execute_and_check_plan() && executor_client_->getResult()) {
          if (executor_client_->getResult().value().success) {
-            return true;
+            std::cout << "=======================\n";
+               return true;
          } else {
             for (const auto & action_feedback : feedback.action_execution_status) {
                if (action_feedback.status == plansys2_msgs::msg::ActionExecutionInfo::FAILED) {
@@ -111,7 +108,11 @@ public:
       return false;
    }
 
-   bool bedroom_2_finish(){
+   bool bedroom_2_tidy_apartment(){
+      return get_plan_state();
+   }
+
+   bool tidy_apartment_2_finish(){
       return get_plan_state();
    }
 
@@ -125,45 +126,58 @@ public:
       executor_client_ = std::make_shared<plansys2::ExecutorClient>(node);
       place_pub_ = node->create_publisher<std_msgs::msg::String>("/blackboard/info/places_explored", 100);
       tf_pub_ = node->create_publisher<geometry_msgs::msg::TransformStamped>("/blackboard/info/tf_explored", 100);
-      tf_broadcaster_ = std::make_shared<tf2_ros::StaticTransformBroadcaster>(node);
       init_knowledge();
    }
 
    void kitchen_code_once() {
-      RCLCPP_INFO(get_logger(), "KITCHEN STATE");
+      RCLCPP_INFO(get_logger(), "KITCHEN STATE");    
    }
 
    void living_room_code_once() {
+
+      //set new goal
       problem_expert_->removePredicate(plansys2::Predicate("(place_explored kitchen)"));
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored dining_zone))"));
  
       auto kitchen_explored = blackboard::Entry<bool>::make_shared(true);   
-      client_state->add_entry("kitchen", kitchen_explored->to_base());
+      auto entry_base = kitchen_explored->to_base();   
+      blackboard->add_entry("kitchen", kitchen_explored->to_base());
 
-      // auto message = std_msgs::msg::String();
-      // message.data = "kitchen";
-      // place_pub_->publish(message);
-      //tf_pub_->publish(sync.get_transform("kitchen"));
-      tf_broadcaster_->sendTransform(blackboard::as<geometry_msgs::msg::TransformStamped>(client_state->get_entry("kitchen_tf"))->data_);
+      geometry_msgs::msg::TransformStamped tf;
+      tf.header.frame_id = "/map";
+      tf.header.stamp=now();
+      tf.transform.translation.x = 1.15;
+      tf.transform.translation.y = -2.6;
+      tf.transform.translation.z = 0.0;
+      tf.transform.rotation.x = 0.0;
+      tf.transform.rotation.y = 0.0;
+      tf.transform.rotation.z = 1.0;
+      tf.transform.rotation.w = 0.0;
+
+
+      auto message = std_msgs::msg::String();
+      message.data = "kitchen";
+      place_pub_->publish(message);
+      tf_pub_->publish(tf);
 
       RCLCPP_INFO(get_logger(), "LIVING ROOM STATE");
 
       executor_client_->start_plan_execution();
+
+      
    }
 
    void corridor_code_once() {
+
       problem_expert_->removePredicate(plansys2::Predicate("(place_explored dining_zone)"));
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored corridor))"));
         
       auto living_room_explored = blackboard::Entry<bool>::make_shared(true);   
-      client_state->add_entry("living_room", living_room_explored->to_base());
+      blackboard->add_entry("living_room", living_room_explored->to_base());
 
-      // auto message = std_msgs::msg::String();
-      // message.data = "living room";
-      // place_pub_->publish(message);
-      //tf_pub_->publish(sync.get_transform("dining_zone"));
-      tf_broadcaster_->sendTransform(blackboard::as<geometry_msgs::msg::TransformStamped>(client_state->get_entry("dining_zone_tf"))->data_);
-
+      auto message = std_msgs::msg::String();
+      message.data = "living room";
+      place_pub_->publish(message);
 
       RCLCPP_INFO(get_logger(), "CORRIDOR STATE");
 
@@ -175,14 +189,11 @@ public:
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored big_bathroom))"));
 
       auto corridor_explored = blackboard::Entry<bool>::make_shared(true);   
-      client_state->add_entry("corridor", corridor_explored->to_base());
+      blackboard->add_entry("corridor", corridor_explored->to_base());
 
-      // auto message = std_msgs::msg::String();
-      // message.data = "corridor";
-      // place_pub_->publish(message);
-      //tf_pub_->publish(sync.get_transform("corridor"));
-      tf_broadcaster_->sendTransform(blackboard::as<geometry_msgs::msg::TransformStamped>(client_state->get_entry("corridor_tf"))->data_);
-
+      auto message = std_msgs::msg::String();
+      message.data = "corridor";
+      place_pub_->publish(message);
 
       RCLCPP_INFO(get_logger(), "BATHROOM STATE");
 
@@ -194,13 +205,11 @@ public:
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored computer_zone))"));
 
       auto bathroom_explored = blackboard::Entry<bool>::make_shared(true);   
-      client_state->add_entry("bathroom", bathroom_explored->to_base());
+      blackboard->add_entry("bathroom", bathroom_explored->to_base());
 
-      // auto message = std_msgs::msg::String();
-      // message.data = "bathroom";
-      // place_pub_->publish(message);
-      //tf_pub_->publish(sync.get_transform("big_bathroom"));
-      tf_broadcaster_->sendTransform(blackboard::as<geometry_msgs::msg::TransformStamped>(client_state->get_entry("big_bathroom_tf"))->data_);
+      auto message = std_msgs::msg::String();
+      message.data = "bathroom";
+      place_pub_->publish(message);
 
    
       RCLCPP_INFO(get_logger(), "BEDROOM STATE");
@@ -208,23 +217,55 @@ public:
       executor_client_->start_plan_execution();
    }
 
-   void finish_code_once() {
+
+
+   void tidy_apartment_code_once(){
+
+      //1.- get random object 
+
+      //2.- select new position different where it is
+
+      //3.- go for it
+
       problem_expert_->removePredicate(plansys2::Predicate("(place_explored computer_zone)"));
+      problem_expert_->setGoal(plansys2::Goal("(and(object_at rubber_duck kitchen))"));
+      // problem_expert_->setGoal(plansys2::Goal("(and(place_explored computer_zone))"));
+
+      RCLCPP_INFO(get_logger(), "TIDY ROOM");
+      executor_client_->start_plan_execution();
+   }
+
+
+
+
+
+   void finish_code_once() {
+
+      // problem_expert_->removePredicate(plansys2::Predicate("(place_explored computer_zone)"));
       problem_expert_->setGoal(plansys2::Goal("(and(robot_at tiago living_room))"));
 
       auto bedroom_explored = blackboard::Entry<bool>::make_shared(true);   
-      client_state->add_entry("bedroom", bedroom_explored->to_base());
+      blackboard->add_entry("bedroom", bedroom_explored->to_base());
 
-      // auto message = std_msgs::msg::String();
-      // message.data = "bedroom";
-      // place_pub_->publish(message);
-      //tf_pub_->publish(sync.get_transform("computer_zone"));
-      tf_broadcaster_->sendTransform(blackboard::as<geometry_msgs::msg::TransformStamped>(client_state->get_entry("computer_zone_tf"))->data_);
-
+      auto message = std_msgs::msg::String();
+      message.data = "bedroom";
+      place_pub_->publish(message);
 
       RCLCPP_INFO(get_logger(), "FINISH STATE");
 
+      auto entry_1_got = blackboard::as<bool>(blackboard->get_entry("kitchen"));
+      auto entry_2_got = blackboard::as<bool>(blackboard->get_entry("living_room"));
+      auto entry_3_got = blackboard::as<bool>(blackboard->get_entry("corridor"));
+      auto entry_4_got = blackboard::as<bool>(blackboard->get_entry("bathroom"));
+      auto entry_5_got = blackboard::as<bool>(blackboard->get_entry("bedroom"));
+      if(entry_1_got->data_){std::cout << "Kitchen was explored" << std::endl;}
+      if(entry_2_got->data_){std::cout << "Living_room was explored" << std::endl;}
+      if(entry_3_got->data_){std::cout << "Corridor was explored" << std::endl;} 
+      if(entry_4_got->data_){std::cout << "Bathroom was explored" << std::endl;}
+      if(entry_5_got->data_){std::cout << "Bedroom was explored" << std::endl;}
+
       executor_client_->start_plan_execution();
+
    }
 
 
@@ -234,7 +275,7 @@ public:
       auto feedback = executor_client_->getFeedBack();
       for (const auto & action_feedback : feedback.action_execution_status) {
          if(action_feedback.completion != 0 && action_feedback.completion != 1){
-            std::cout << "[" << action_feedback.action_full_name << " " <<
+            std::cout << "["  <<
                action_feedback.completion * 100.0 << "%]";
             std::cout << std::endl;
          }
@@ -261,9 +302,16 @@ public:
       show_planer_state();
    }
 
+   void tidy_apartment_code_iterative() {
+      show_planer_state();
+   }
+
    void finsish_code_iterative() {
       show_planer_state();
    }
+
+
+
    
 
    void init_knowledge()
@@ -282,11 +330,69 @@ public:
       problem_expert_->addInstance(plansys2::Instance{"dishwasher_zone", "zone"});
       problem_expert_->addInstance(plansys2::Instance{"computer_zone", "zone"});
       problem_expert_->addInstance(plansys2::Instance{"bathtub_zone", "zone"});
+      // problem_expert_->addInstance(plansys2::Instance{"laptop", "object"});
+      // problem_expert_->addInstance(plansys2::Instance{"paper_boat", "object"});
+      // problem_expert_->addInstance(plansys2::Instance{"biscuits", "object"});
+      // problem_expert_->addInstance(plansys2::Instance{"gray_pillow", "object"});
+     
+      //objects to detect
+
+      problem_expert_->addInstance(plansys2::Instance{"rubber_duck", "object"});
+      problem_expert_->addInstance(plansys2::Instance{"computer", "object"});
+      problem_expert_->addInstance(plansys2::Instance{"orange", "object"});
+      problem_expert_->addInstance(plansys2::Instance{"bowl", "object"});
+      problem_expert_->addInstance(plansys2::Instance{"fire_extinguisher", "object"});
+
       problem_expert_->addInstance(plansys2::Instance{"tiago", "robot"});
+
+
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together kitchen living_room)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together living_room kitchen)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together living_room corridor)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together corridor living_room)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together corridor downstairs)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together downstairs corridor)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together corridor main_bedroom)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together main_bedroom corridor)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together corridor big_bathroom)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together big_bathroom corridor)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together corridor computer_bedroom)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together computer_bedroom corridor)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together corridor small_bathroom)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together small_bathroom corridor)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together kitchen fridge_zone)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together fridge_zone kitchen)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together kitchen dishwasher_zone)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together dishwasher_zone kitchen)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together living_room tv_zone)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together tv_zone living_room)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together living_room dining_zone)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together dining_zone living_room)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together computer_bedroom computer_zone)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together computer_zone computer_bedroom)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together big_bathroom bathtub_zone)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(places_together bathtub_zone big_bathroom)"));
+
 
       problem_expert_->addPredicate(plansys2::Predicate("(robot_at tiago living_room)"));
       problem_expert_->addPredicate(plansys2::Predicate("(robot_idle tiago)"));
 
+      //this objects should be added later by the sync node
+      // problem_expert_->addPredicate(plansys2::Predicate("(object_at laptop tv_zone)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(object_at paper_boat living_room)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(object_at biscuits dishwasher_zone)"));
+      // problem_expert_->addPredicate(plansys2::Predicate("(object_at gray_pillow main_bedroom)"));
+  
+
+      //set object correctly 
+      problem_expert_->addPredicate(plansys2::Predicate("(object_at computer computer_zone)"));
+      problem_expert_->addPredicate(plansys2::Predicate("(object_at bowl living_room)"));
+      problem_expert_->addPredicate(plansys2::Predicate("(object_at fire_extinguisher corridor)"));
+      problem_expert_->addPredicate(plansys2::Predicate("(object_at rubber_duck big_bathroom)"));
+      problem_expert_->addPredicate(plansys2::Predicate("(object_at orange kitchen)"));
+
+
+      //set points to blackboard
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored kitchen))"));
    }
 
@@ -300,8 +406,7 @@ public:
       std::shared_ptr<blackboard::BlackBoard> blackboard = blackboard::BlackBoard::make_shared();
       rclcpp::Publisher<std_msgs::msg::String>::SharedPtr place_pub_;
       rclcpp::Publisher<geometry_msgs::msg::TransformStamped>::SharedPtr tf_pub_;
-      std::shared_ptr<tf2_ros::StaticTransformBroadcaster> tf_broadcaster_;
-      std::shared_ptr<blackboard::BlackBoardClient> client_state = blackboard::BlackBoardClient::make_shared();
+     
 };
 
 

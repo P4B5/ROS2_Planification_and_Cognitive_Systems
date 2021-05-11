@@ -53,36 +53,20 @@ void hfsm_cognitive_apartment::tick()
   std_msgs::msg::String msg;
 
   switch (state_) {
-    case INIT:
-      init_code_iterative();
+    case CORRIDOR:
+      corridor_code_iterative();
 
-      msg.data = "init";
+      msg.data = "corridor";
       state_pub_->publish(msg);
 
-      if (init_2_kitchen()) {
+      if (corridor_2_bathroom()) {
         deactivateAllDeps();
 
-        state_ = KITCHEN;
+        state_ = BATHROOM;
         state_ts_ = now();
 
-        kitchen_activateDeps();
-        kitchen_code_once();
-      }
-      break;
-    case LIVING_ROOM:
-      living_room_code_iterative();
-
-      msg.data = "living_room";
-      state_pub_->publish(msg);
-
-      if (living_room_2_corridor()) {
-        deactivateAllDeps();
-
-        state_ = CORRIDOR;
-        state_ts_ = now();
-
-        corridor_activateDeps();
-        corridor_code_once();
+        bathroom_activateDeps();
+        bathroom_code_once();
       }
       break;
     case BATHROOM:
@@ -101,20 +85,36 @@ void hfsm_cognitive_apartment::tick()
         bedroom_code_once();
       }
       break;
-    case CORRIDOR:
-      corridor_code_iterative();
+    case LIVING_ROOM:
+      living_room_code_iterative();
 
-      msg.data = "corridor";
+      msg.data = "living_room";
       state_pub_->publish(msg);
 
-      if (corridor_2_bathroom()) {
+      if (living_room_2_corridor()) {
         deactivateAllDeps();
 
-        state_ = BATHROOM;
+        state_ = CORRIDOR;
         state_ts_ = now();
 
-        bathroom_activateDeps();
-        bathroom_code_once();
+        corridor_activateDeps();
+        corridor_code_once();
+      }
+      break;
+    case INIT:
+      init_code_iterative();
+
+      msg.data = "init";
+      state_pub_->publish(msg);
+
+      if (init_2_kitchen()) {
+        deactivateAllDeps();
+
+        state_ = KITCHEN;
+        state_ts_ = now();
+
+        kitchen_activateDeps();
+        kitchen_code_once();
       }
       break;
     case KITCHEN:
@@ -140,13 +140,13 @@ void hfsm_cognitive_apartment::tick()
       state_pub_->publish(msg);
 
       break;
-    case BEDROOM:
-      bedroom_code_iterative();
+    case TIDY_APARTMENT:
+      tidy_apartment_code_iterative();
 
-      msg.data = "bedroom";
+      msg.data = "tidy_apartment";
       state_pub_->publish(msg);
 
-      if (bedroom_2_finish()) {
+      if (tidy_apartment_2_finish()) {
         deactivateAllDeps();
 
         state_ = FINISH;
@@ -154,6 +154,22 @@ void hfsm_cognitive_apartment::tick()
 
         finish_activateDeps();
         finish_code_once();
+      }
+      break;
+    case BEDROOM:
+      bedroom_code_iterative();
+
+      msg.data = "bedroom";
+      state_pub_->publish(msg);
+
+      if (bedroom_2_tidy_apartment()) {
+        deactivateAllDeps();
+
+        state_ = TIDY_APARTMENT;
+        state_ts_ = now();
+
+        tidy_apartment_activateDeps();
+        tidy_apartment_code_once();
       }
       break;
   }
@@ -165,11 +181,7 @@ hfsm_cognitive_apartment::deactivateAllDeps()
 }
 
 void
-hfsm_cognitive_apartment::init_activateDeps()
-{
-}
-void
-hfsm_cognitive_apartment::living_room_activateDeps()
+hfsm_cognitive_apartment::corridor_activateDeps()
 {
 }
 void
@@ -177,7 +189,11 @@ hfsm_cognitive_apartment::bathroom_activateDeps()
 {
 }
 void
-hfsm_cognitive_apartment::corridor_activateDeps()
+hfsm_cognitive_apartment::living_room_activateDeps()
+{
+}
+void
+hfsm_cognitive_apartment::init_activateDeps()
 {
 }
 void
@@ -186,6 +202,10 @@ hfsm_cognitive_apartment::kitchen_activateDeps()
 }
 void
 hfsm_cognitive_apartment::finish_activateDeps()
+{
+}
+void
+hfsm_cognitive_apartment::tidy_apartment_activateDeps()
 {
 }
 void
