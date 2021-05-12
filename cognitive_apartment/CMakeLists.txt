@@ -15,13 +15,13 @@ find_package(lifecycle_msgs REQUIRED)
 find_package(blackboard REQUIRED)
 find_package(blackboard_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 find_package(image_transport REQUIRED)
 find_package(OpenCV 4.2.0 REQUIRED)
 
 find_package(cv_bridge REQUIRED)
-#find_package(pcl_conversions REQUIRED)
-find_package(PCL REQUIRED QUIET COMPONENTS common io)
+find_package(PCL REQUIRED QUIET COMPONENTS common io console)
 find_package(pcl_msgs REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS system)
@@ -51,10 +51,8 @@ set(dependencies
 
 include_directories(fsm)
 include_directories(${OpenCV_INCLUDE_DIRS})
-#include_directories(${PCL_INCLUDE_DIRS})
+include_directories(${PCL_INCLUDE_DIRS})
 include_directories(${PCL_COMMON_INCLUDE_DIRS})
-
-#add_definitions(${PCL_DEFINITIONS})
 
 link_directories(
 	${PCL_LIBRARY_DIRS}
@@ -75,8 +73,8 @@ ament_target_dependencies(release_object_action_node ${dependencies})
 add_executable(explore_action_node src/explore_action_node.cpp)
 ament_target_dependencies(explore_action_node ${dependencies})
 
-add_executable(filtro src/filtro.cpp)
-ament_target_dependencies(filtro ${dependencies})
+add_executable(object_recognition src/object_recognition.cpp)
+ament_target_dependencies(object_recognition ${dependencies})
 
 add_executable(hfsm_cognitive_apartment 
   src/hfsm_imp_cognitive_apartment.cpp
@@ -84,8 +82,9 @@ add_executable(hfsm_cognitive_apartment
 )
 ament_target_dependencies(hfsm_cognitive_apartment ${dependencies})
 
-target_link_libraries(filtro
+target_link_libraries(object_recognition
   ${Boost_SYSTEM_LIBRARY}  # pcl_conversions requires this
+  ${PCL_LIBRARIES}
 )
 
 install(DIRECTORY launch pddl config DESTINATION share/${PROJECT_NAME})
@@ -97,12 +96,11 @@ install(TARGETS
   release_object_action_node
   hfsm_cognitive_apartment
   sync_node
-  filtro
+  object_recognition
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
-
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

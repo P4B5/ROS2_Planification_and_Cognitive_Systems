@@ -1,15 +1,17 @@
 <component id="hfsm_cognitive_apartment">
- <state x="-795" id="init" initial="true" y="-1463"/>
- <state x="-688" id="living_room" initial="false" y="-1399"/>
- <state x="-473" id="bathroom" initial="false" y="-1402"/>
- <state x="-579" id="corridor" initial="false" y="-1326"/>
- <state x="-795" id="kitchen" initial="false" y="-1326"/>
- <state x="-260" id="finish" initial="false" y="-1397"/>
- <state x="-366" id="bedroom" initial="false" y="-1322"/>
+ <state x="-825" y="-1389" initial="false" id="corridor"/>
+ <state x="-719" y="-1465" initial="false" id="bathroom"/>
+ <state x="-934" y="-1462" initial="false" id="living_room"/>
+ <state x="-1041" y="-1526" initial="true" id="init"/>
+ <state x="-1041" y="-1389" initial="false" id="kitchen"/>
+ <state x="-400" y="-1381" initial="false" id="finish"/>
+ <state x="-500" y="-1478" initial="false" id="tidy_apartment"/>
+ <state x="-612" y="-1385" initial="false" id="bedroom"/>
  <transition dst="kitchen" src="init"/>
+ <transition dst="finish" src="tidy_apartment"/>
  <transition dst="living_room" src="kitchen"/>
+ <transition dst="bedroom" src="bathroom"/>
+ <transition dst="tidy_apartment" src="bedroom"/>
  <transition dst="corridor" src="living_room"/>
  <transition dst="bathroom" src="corridor"/>
- <transition dst="finish" src="bedroom"/>
- <transition dst="bedroom" src="bathroom"/>
 </component>
