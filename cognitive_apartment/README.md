@@ -54,6 +54,11 @@ if(entry_1_got->data_){std::cout << "Kitchen was explored" << std::endl;}
 
 ## Videos
 
+- First implementation
+
 [Video 1 simple navigation](https://www.youtube.com/watch?v=3u2zh0XNpuo)
 [Video 2 full example with topics](https://www.youtube.com/watch?v=mVidCFOIgBQ)
+
+- Second implementation
+[Video 2 full example with topics](https://youtu.be/VFc-UksKrts)
  
