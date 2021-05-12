@@ -21,15 +21,11 @@
 #include "plansys2_executor/ExecutorClient.hpp"
 #include "plansys2_problem_expert/ProblemExpertClient.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
-#include <tf2_ros/static_transform_broadcaster.h>
+// #include "sync_node.hpp"
 
 #include "hfsm_cognitive_apartment.hpp"
 
 #include "blackboard/BlackBoard.hpp"
-#include "blackboard/BlackBoardNode.hpp"
-#include "blackboard/BlackBoardClient.hpp"
-
-#include "sync_node.hpp"
 
 
 using std::placeholders::_1;
@@ -74,7 +70,8 @@ public:
      auto feedback = executor_client_->getFeedBack();
       if (!executor_client_->execute_and_check_plan() && executor_client_->getResult()) {
          if (executor_client_->getResult().value().success) {
-            return true;
+            std::cout << "=======================\n";
+               return true;
          } else {
             for (const auto & action_feedback : feedback.action_execution_status) {
                if (action_feedback.status == plansys2_msgs::msg::ActionExecutionInfo::FAILED) {
@@ -133,10 +130,12 @@ public:
    }
 
    void kitchen_code_once() {
-      RCLCPP_INFO(get_logger(), "KITCHEN STATE");
+      RCLCPP_INFO(get_logger(), "KITCHEN STATE");    
    }
 
    void living_room_code_once() {
+
+      //set new goal
       problem_expert_->removePredicate(plansys2::Predicate("(place_explored kitchen)"));
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored dining_zone))"));
  
@@ -151,9 +150,12 @@ public:
       RCLCPP_INFO(get_logger(), "LIVING ROOM STATE");
 
       executor_client_->start_plan_execution();
+
+      
    }
 
    void corridor_code_once() {
+
       problem_expert_->removePredicate(plansys2::Predicate("(place_explored dining_zone)"));
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored corridor))"));
         
@@ -164,7 +166,6 @@ public:
       message.data = "living room";
       place_pub_->publish(message);
       tf_broadcaster_->sendTransform(blackboard::as<geometry_msgs::msg::TransformStamped>(client_state->get_entry("dining_zone_tf"))->data_);
-
 
       RCLCPP_INFO(get_logger(), "CORRIDOR STATE");
 
@@ -183,7 +184,6 @@ public:
       place_pub_->publish(message);
       tf_broadcaster_->sendTransform(blackboard::as<geometry_msgs::msg::TransformStamped>(client_state->get_entry("corridor_tf"))->data_);
 
-
       RCLCPP_INFO(get_logger(), "BATHROOM STATE");
 
       executor_client_->start_plan_execution();
@@ -194,12 +194,13 @@ public:
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored computer_zone))"));
 
       auto bathroom_explored = blackboard::Entry<bool>::make_shared(true);   
-      client_state->add_entry("bathroom", bathroom_explored->to_base());
+      blackboard->add_entry("bathroom", bathroom_explored->to_base());
 
       auto message = std_msgs::msg::String();
       message.data = "bathroom";
       place_pub_->publish(message);
       tf_broadcaster_->sendTransform(blackboard::as<geometry_msgs::msg::TransformStamped>(client_state->get_entry("big_bathroom_tf"))->data_);
+
 
    
       RCLCPP_INFO(get_logger(), "BEDROOM STATE");
@@ -232,10 +233,10 @@ public:
       if(blackboard::as<bool>(client_state->get_entry("bathroom"))->data_){std::cout << "Bathroom was explored" << std::endl;}
       if(blackboard::as<bool>(client_state->get_entry("bedroom"))->data_){std::cout << "Bedroom was explored" << std::endl;}
 
-
       RCLCPP_INFO(get_logger(), "FINISH STATE");
 
       executor_client_->start_plan_execution();
+
    }
 
 
@@ -245,7 +246,7 @@ public:
       auto feedback = executor_client_->getFeedBack();
       for (const auto & action_feedback : feedback.action_execution_status) {
          if(action_feedback.completion != 0 && action_feedback.completion != 1){
-            std::cout << "[" << action_feedback.action_full_name << " " <<
+            std::cout << "["  <<
                action_feedback.completion * 100.0 << "%]";
             std::cout << std::endl;
          }
@@ -279,6 +280,9 @@ public:
    void finsish_code_iterative() {
       show_planer_state();
    }
+
+
+
    
 
    void init_knowledge()
@@ -297,6 +301,19 @@ public:
       problem_expert_->addInstance(plansys2::Instance{"dishwasher_zone", "zone"});
       problem_expert_->addInstance(plansys2::Instance{"computer_zone", "zone"});
       problem_expert_->addInstance(plansys2::Instance{"bathtub_zone", "zone"});
+      // problem_expert_->addInstance(plansys2::Instance{"laptop", "object"});
+      // problem_expert_->addInstance(plansys2::Instance{"paper_boat", "object"});
+      // problem_expert_->addInstance(plansys2::Instance{"biscuits", "object"});
+      // problem_expert_->addInstance(plansys2::Instance{"gray_pillow", "object"});
+     
+      //objects to detect
+
+      problem_expert_->addInstance(plansys2::Instance{"rubber_duck", "object"});
+      problem_expert_->addInstance(plansys2::Instance{"computer", "object"});
+      problem_expert_->addInstance(plansys2::Instance{"orange", "object"});
+      problem_expert_->addInstance(plansys2::Instance{"bowl", "object"});
+      problem_expert_->addInstance(plansys2::Instance{"fire_extinguisher", "object"});
+
       problem_expert_->addInstance(plansys2::Instance{"tiago", "robot"});
 
       /////
@@ -315,7 +332,7 @@ public:
 
       problem_expert_->addPredicate(plansys2::Predicate("(robot_at tiago living_room)"));
       problem_expert_->addPredicate(plansys2::Predicate("(robot_idle tiago)"));
-
+      
       problem_expert_->setGoal(plansys2::Goal("(and(place_explored kitchen))"));
    }
 
