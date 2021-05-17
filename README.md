@@ -22,14 +22,16 @@ Main projects:
 
 4. Apartment navigation: A complete robot pick&place task integrating plansys2 and nav2 inside an apartment: [Apartment navigation](https://github.com/P4B5/ROS2_Planification_and_Cognitive_Systems/tree/main/apartment_actions)
 
-5. Cognitive Apartment: Tiago explore different areas of an apartment. Implemented using a Blackboard and a hfsm to create a cognitive behavior: [Cognitive Apartment](https://github.com/P4B5/ROS2_Planification_and_Cognitive_Systems/tree/main/cognitive_apartment)
+5. Cognitive Apartment: Tiago explore different areas of an apartment. Implemented using a Blackboard and a hfsm to create a cognitive behavior + sync node to provides intelligence and reability to the architecture: [Cognitive Apartment](https://github.com/P4B5/ROS2_Planification_and_Cognitive_Systems/tree/main/cognitive_apartment)
 
+6. Visual Attention solution for cognitive systems: [slides](https://github.com/P4B5/ROS2_Planification_and_Cognitive_Systems/blob/main/visual_attention_slides.pdf)
 
 
 Additional projects:
 
 1. Hospital World: A hospital modeled in webots for testing Tiago robot: [Hospital](https://github.com/P4B5/hospital_webots)
 
+FINAL COGNITIVE ARCHITECTURE:
 
-![cheatsheet1](./docs/ros2_cheatsheet_1.png)
-![cheatsheet2](./docs/ros2_cheatsheet_2.png)
+![cheatsheet1](./docs/graph.png)
+
